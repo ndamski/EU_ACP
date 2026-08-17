@@ -1,0 +1,61 @@
+type,specification,variable,coefficient,std_error,t,sig,n
+Gravity,M1: Baseline PPML,ln_dist,-1.6198,0.9957,-1.6268,,41258
+Gravity,M1: Baseline PPML,lang,0.886,0.2155,4.1106,***,41258
+Gravity,M1: Baseline PPML,colonial,0.3438,0.2004,1.7157,*,41258
+Gravity,M1: Baseline PPML,epa,-0.0234,0.0657,-0.3561,,41258
+Gravity,M2: Main PPML,ln_dist,-1.6259,0.9951,-1.6339,,41258
+Gravity,M2: Main PPML,lang,0.8849,0.2157,4.1031,***,41258
+Gravity,M2: Main PPML,colonial,0.3444,0.2003,1.7194,*,41258
+Gravity,M2: Main PPML,epa,-0.0441,0.0662,-0.6659,,41258
+Main,M2: Main PPML,it_share,-2.4824,0.6509,-3.814,***,41258
+Main,M3c: Net EPA at mean IT Share,epa,-0.0448,0.0625,-0.7177,,41258
+Main,M5: OLS ln(trade),it_share,-1.8713,0.4564,-4.0999,***,38559
+Main,M5b: OLS ln(1+trade),it_share,-1.6355,0.4185,-3.9079,***,41258
+Main,NB-PML,it_share,-2.4494,0.5435,-4.5066,***,41258
+Main,+ ACP GDP/pop,it_share,-1.7988,0.6619,-2.7174,***,38955
+Mechanical,Ex-EU denominator,it_share_exeu,-0.2634,0.5099,-0.5167,,41258
+Mechanical,EU component fixed,it_share_fixeu,-0.2938,0.7162,-0.4103,,41258
+Mechanical,Log decomp (total): ln(intra),ln_intra,0.0168,0.0475,0.3538,,39659
+Mechanical,Log decomp (total): ln(total),ln_total,0.697,0.0769,9.0615,***,39659
+Mechanical,Log decomp (clean): ln(intra),ln_intra,0.1,0.0528,1.8936,*,39659
+Mechanical,Log decomp (clean): ln(non-EU),ln_noneu,0.3551,0.0661,5.3731,***,39659
+Mechanical,IT Share x EU share,it_share:s_eu_dev,-0.2041,2.4411,-0.0836,,41258
+Mechanical,Disjoint: ln(intra),ln_intra,0.1333,0.0533,2.5005,**,39659
+Mechanical,Disjoint: ln(extra non-EU),ln_extra,0.2914,0.0632,4.6093,***,39659
+Mechanical,"Baseline, log-spec sample",it_share,-2.4947,0.6495,-3.8412,***,39659
+Restriction,Overlapping (clean): Bilateral,ln_intra + ln_noneu,0.4551,0.0828,5.4964,***,39659
+Restriction,Overlapping (clean): ACP->EU,ln_intra + ln_noneu,0.3876,0.1069,3.6258,***,39659
+Restriction,Overlapping (clean): EU->ACP,ln_intra + ln_noneu,0.4926,0.0721,6.8322,***,39659
+Restriction,Disjoint: Bilateral,ln_intra + ln_extra,0.4247,0.0823,5.1604,***,39659
+Restriction,Disjoint: ACP->EU,ln_intra + ln_extra,0.3369,0.1065,3.1634,***,39659
+Restriction,Disjoint: EU->ACP,ln_intra + ln_extra,0.4857,0.07,6.9386,***,39659
+Restriction,Side-matched: EU->ACP,ln_intra_m + ln_noneu_m,0.5436,0.0549,9.9016,***,39629
+Restriction,Side-matched: ACP->EU,ln_intra_x + ln_noneu_x,0.1882,0.071,2.6507,***,39483
+Direction,D1: ACP exports to EU,it_share,-2.6164,1.019,-2.5677,**,41258
+Direction,D2: EU exports to ACP,it_share,-2.2575,0.482,-4.6835,***,41258
+Direction,D3: EU exports + GDP/pop,it_share,-1.7749,0.5964,-2.976,***,38955
+Direction,"D4: ACP exports, ex-EU denom",it_share_exeu,0.8901,0.7404,1.2022,,41258
+Direction,"D5: EU exports, ex-EU denom",it_share_exeu,-1.298,0.3258,-3.9836,***,41258
+Direction,"D6: ACP exports, EU fixed",it_share_fixeu,1.3619,1.0095,1.3491,,41258
+Direction,"D7: EU exports, EU fixed",it_share_fixeu,-1.7384,0.4617,-3.7652,***,41258
+Direction,"D8: ACP exports, ln(intra)",ln_intra,0.1913,0.0758,2.5233,**,39659
+Direction,"D9: EU exports, ln(intra)",ln_intra,0.0866,0.042,2.0644,**,39659
+Direction,"D10: ACP exports, export denom",it_share_exeu_x,0.4713,0.3739,1.2605,,41258
+Direction,"D11: EU exports, import denom",it_share_exeu_m,-1.2521,0.2678,-4.675,***,41258
+Direction,"D12: EU exports, ln(intra imports)",ln_intra_m,-0.0283,0.0243,-1.1608,,39629
+Direction,"D13: ACP exports, ln(intra exports)",ln_intra_x,0.148,0.0435,3.4063,***,39483
+REC (interaction),ECOWAS,it_ECOWAS,-3.3453,0.5298,-6.3147,***,41258
+REC (interaction),Central Africa,it_CAF,1.8268,2.2114,0.8261,,41258
+REC (interaction),SADC,it_SADC,-3.4394,1.1307,-3.0419,***,41258
+REC (interaction),EAC,it_EAC,-12.6007,12.6907,-0.9929,,41258
+REC (interaction),ESA,it_ESA,-1.7105,1.1669,-1.4659,,41258
+REC (interaction),CARIFORUM,it_CARIFORUM,-2.5384,1.0295,-2.4656,**,41258
+REC (interaction),PIF,it_PIF,-26.3007,12.9331,-2.0336,**,41258
+Sample,From 1995,it_share,-2.7413,0.6751,-4.0606,***,45731
+Sample,From 2007,it_share,-1.7514,0.5292,-3.3094,***,31388
+Sample,Excl. South Africa,it_share,-2.262,0.6236,-3.6273,***,40710
+Sample,Excl. Nigeria,it_share,-2.1629,0.5938,-3.6427,***,40710
+Sample,Excl. SOM+ERI,it_share,-2.4822,0.6517,-3.8088,***,40710
+Sample,Excl. SACU,it_share,-2.0194,0.7016,-2.8785,***,38518
+Sample,Excl. GBR,it_share,-2.2234,0.6319,-3.5183,***,39684
+Sample,Africa only,it_share,-2.3726,0.732,-3.2411,***,24863

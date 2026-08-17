@@ -1,0 +1,633 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% === PACKAGES ===
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{threeparttable}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{natbib}
+
+% === COLORS ===
+\definecolor{ufblue}{RGB}{0,51,141}
+\definecolor{ufblueLight}{RGB}{100,149,237}
+\definecolor{darkgray}{RGB}{64,64,64}
+\definecolor{alertred}{RGB}{180,20,20}
+
+\setbeamercolor{title}{fg=ufblue}
+\setbeamercolor{subtitle}{fg=darkgray}
+\setbeamercolor{structure}{fg=ufblue}
+\setbeamercolor{alerted text}{fg=alertred}
+\setbeamercolor{item}{fg=ufblue}
+\setbeamercolor{block title}{bg=ufblue, fg=white}
+\setbeamercolor{block body}{bg=ufblue!8, fg=black}
+
+% === THEME ===
+\usetheme{Madrid}
+\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[circle]
+
+% === TITLE ===
+\title[EU-ACP Trade Integration]{Intra-Regional Trade Integration and EU-ACP Bilateral Trade}
+\subtitle{Evidence from a Gravity Model}
+\author[Noah Damski]{Noah Damski}
+\institute[University of Florida]{Department of Economics \\ University of Florida}
+\date{February 2026}
+
+\begin{document}
+
+% ---------------------------------------------------------------
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ---------------------------------------------------------------
+\begin{frame}{Outline}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{enumerate}
+                \item Introduction \& Motivation
+                \item Institutional Background
+                \item Data \& Sample
+                \item Empirical Strategy
+            \end{enumerate}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{enumerate}\setcounter{enumi}{4}
+                \item Main Results
+                \item Mechanisms \& Heterogeneity
+                \item Robustness
+                \item Conclusion
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Introduction}
+
+\begin{frame}{Research Question}
+
+    \begin{block}{Question}
+        Does intra-regional trade integration among ACP countries act as a
+        \textbf{stumbling block} or \textbf{building block} for bilateral trade with the EU?
+    \end{block}
+
+    \bigskip
+
+    \textbf{Why it matters}
+    \begin{itemize}
+        \item ACP countries pursue simultaneous goals: deepen regional integration \emph{and}
+              maintain preferential EU access under EPAs
+        \item These goals may conflict if regional integration diverts trade away from EU partners
+        \item The post-Cotonou framework (2021) preserves the EPA architecture---design choices matter
+    \end{itemize}
+
+    \bigskip
+
+    \textbf{Contribution}
+    \begin{itemize}
+        \item First empirical test of the stumbling-block hypothesis in the EU-ACP context
+        \item Panel of 78 ACP countries $\times$ EU-27 $\times$ 1995--2021 with time-varying
+              EPA treatment and REC membership
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Preview of Main Findings}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Main result}
+                IT share coefficient: \alert{$-0.564^{*}$} (s.e.\ $0.322$)\\[2pt]
+                \textbf{Stumbling block confirmed}
+            \end{block}
+            \medskip
+            \begin{block}{Magnitudes}
+                At mean IT share (11.6\%): \alert{$-6.3\%$} bilateral trade\\
+                At p90 IT share (25.5\%): \alert{$-13.4\%$} bilateral trade
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{EPA moderation}
+                EPA $\times$ IT share: \alert{$+1.048^{**}$}\\
+                EPAs attenuate the stumbling block
+            \end{block}
+            \medskip
+            \begin{block}{Direction}
+                Driven by \alert{EU exports to ACP} ($-1.027^{***}$)\\
+                ACP exports to EU: $-0.059$ (n.s.)\\[2pt]
+                \small Consistent with import substitution
+            \end{block}
+        \end{column}
+    \end{columns}
+
+    \bigskip
+    \small\textit{All seven RECs show negative IT share coefficients;
+    five of six interpretable estimates are statistically significant.}
+
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Institutional Background}
+
+\begin{frame}{Institutional Background}
+
+    \textbf{From Lom\'{e} to Cotonou to EPAs}
+    \begin{itemize}
+        \item \textbf{Lom\'{e} Convention} (1975--2000): non-reciprocal EU preferences for ACP exports
+        \item \textbf{Cotonou Agreement} (2000): shift to reciprocal EPAs, WTO-compatible
+        \item \textbf{EPAs}: free trade areas between the EU and each ACP regional group
+    \end{itemize}
+
+    \medskip
+
+    \textbf{ACP Regional Groupings (7 RECs in sample)}
+
+    \smallskip
+    {\small
+    \begin{tabular}{ll@{\qquad}ll}
+        ECOWAS (16)    & West Africa      & EAC (5)       & East Africa \\
+        SADC (8)       & Southern Africa  & COMESA (12)   & Eastern/Southern Africa \\
+        CARIFORUM (15) & Caribbean        & Cent.\ Africa (7) & Central Africa \\
+        PIF (15)       & Pacific          & & \\
+    \end{tabular}}
+
+    \medskip
+
+    \textbf{EPA Implementation Timeline (provisional application dates)}
+    \begin{itemize}
+        \item 2008: CARIFORUM \quad 2009: PNG \quad 2012: ESA-4
+        \item 2014: Cameroon, Fiji \quad 2016: SADC group \quad 2018: Mozambique \quad 2019: Comoros
+        \item EAC: initialled but \textbf{never applied} within the 1995--2021 sample period
+    \end{itemize}
+
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Data \& Sample}
+
+\begin{frame}{Data Sources and Sample}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Data Sources}
+            \begin{itemize}
+                \item \textbf{BACI} HS92 V202601: bilateral trade flows, 1995--2021
+                \item \textbf{CEPII Gravity} V202211: distance, language, colonial tie
+                \item \textbf{WDI}: GDP, population (Cook Islands \& Niue patched)
+                \item \textbf{EUR-Lex}: EPA provisional-application dates
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Sample}
+            \begin{itemize}
+                \item 78 ACP countries across 7 RECs
+                \item EU-27 (time-varying via enlargement)
+                \item 1995--2021 (27 years)
+                \item Potential: $78 \times 27 \times 27 = 56{,}862$ obs
+                \item PPML sample: \textbf{45,647} obs after conditioning on data availability
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \medskip
+
+    \textbf{Key Variable: Intra-REC Trade Share (IT Share)}
+    \[
+        \text{IT Share}_{jt} = \frac{\text{Intra-REC exports}_{jt} +
+        \text{Intra-REC imports}_{jt}}{\text{Total trade}_{jt}}
+    \]
+    Time-varying at the country level.
+    SACU: imputed from non-SACU SADC members where BACI flows are missing.
+
+\end{frame}
+
+\begin{frame}{Descriptive Statistics by REC}
+
+    \smallskip
+    {\small
+    \begin{tabular}{lccccc}
+        \toprule
+        REC & Countries & \makecell{IT Share\\Mean} & \makecell{Mean Trade\\(\$000s)} &
+            \makecell{Zero\\Share} & \makecell{EPA\\Cover} \\
+        \midrule
+        SADC           &  8 & 0.30 & 247 &  9.7\% & 15.7\% \\
+        EAC            &  5 & 0.15 &  45 &  2.0\% &  0.0\% \\
+        ECOWAS         & 16 & 0.14 & 136 &  2.0\% &  2.9\% \\
+        CARIFORUM      & 15 & 0.14 &  26 &  2.8\% & 48.4\% \\
+        COMESA         & 12 & 0.04 &  36 &  3.0\% & 13.3\% \\
+        Central Afr.   &  7 & 0.05 &  73 &  5.8\% &  4.2\% \\
+        PIF            & 15 & 0.04 &   7 & 25.3\% &  5.3\% \\
+        \midrule
+        Full sample    & 78 & 0.12 & --- &  7.3\% &   ---  \\
+        \bottomrule
+    \end{tabular}}
+
+    \medskip
+    \small
+    \textit{The 7.3\% aggregate zero-trade share motivates PPML.
+    SADC IT share is elevated partly by SACU imputation.
+    CARIFORUM has the highest EPA coverage; EAC is zero by construction.}
+
+\end{frame}
+
+\begin{frame}{Descriptive Figures}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{OUTPUT/figures/it_share_time_series.png}\\
+            \small Mean IT share by REC, 1995--2021
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{OUTPUT/figures/stumbling_block_scatter.png}\\
+            \small IT share vs.\ $\ln$(EU-ACP trade) by REC; negative slopes throughout
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Empirical Strategy}
+
+\begin{frame}{Gravity Model Specification}
+
+    \textbf{PPML Gravity Model} \citep{santos-silva2006}
+    \[
+        \underbrace{T_{ijt}}_{\text{EU-ACP trade}} = \exp\!\bigl(
+            \beta_1 \underbrace{\text{ITshare}_{jt}}_{\text{key variable}} +
+            \beta_2 \text{EPA}_{jt} +
+            \beta_3 (\text{ITshare}_{jt} \times \text{EPA}_{jt}) +
+            \gamma X_{ij} + \mu_{it} + \alpha_j + \theta_t
+        \bigr) \cdot \varepsilon_{ijt}
+    \]
+
+    \medskip
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Fixed Effects}
+            \begin{itemize}
+                \item $\mu_{it}$: Exporter $\times$ Year FE\\
+                      \small absorbs all EU time-varying factors
+                \item $\alpha_j$: ACP country FE\\
+                      \small absorbs time-invariant ACP characteristics
+                \item $\theta_t$: Year FE\\
+                      \small absorbs common time shocks
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Why not Importer $\times$ Year FE?}
+            \begin{itemize}
+                \item ITshare and EPA vary only at the ACP country $\times$ year level
+                \item Importer $\times$ Year FEs would fully \emph{absorb} both variables
+                \item Solution: ACP country FE $+$ Year FE preserves identification while
+                      controlling for common time shocks
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \medskip
+    \textbf{Identification:} within-ACP-country variation in IT share over time,
+    across 27 EU partner-year observations per country-year.
+
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Main Results}
+
+\begin{frame}{Main Results}
+
+    {\tiny
+    \begin{tabular}{lccccc}
+        \toprule
+        & \makecell{Baseline\\PPML\\(1)} & \makecell{IT Share\\PPML\\(2)} &
+          \makecell{IT $\times$ EPA\\PPML\\(3)} &
+          \makecell{IT Intensity\\PPML\\(4)} & \makecell{IT Share\\OLS\\(5)} \\
+        \midrule
+        $\ln$(Distance)
+          & $-1.729^{***}$ & $-1.786^{***}$ & $-1.786^{***}$ & $-1.767^{***}$ & $-1.173^{***}$ \\
+          & $(0.609)$      & $(0.644)$      & $(0.644)$      & $(0.642)$      & $(0.239)$ \\[2pt]
+        Common Language
+          & $1.107^{***}$  & $1.118^{***}$  & $1.118^{***}$  & $1.115^{***}$  & $0.674^{***}$ \\
+          & $(0.218)$      & $(0.223)$      & $(0.223)$      & $(0.222)$      & $(0.125)$ \\[2pt]
+        Colonial Tie
+          & $0.201$        & $0.188$        & $0.188$        & $0.180$        & $1.255^{***}$ \\
+          & $(0.231)$      & $(0.235)$      & $(0.235)$      & $(0.235)$      & $(0.203)$ \\[2pt]
+        EPA
+          & $-0.018$       & $-0.019$       & $-0.139^{*}$   & $-0.044$       & $-0.174^{***}$ \\
+          & $(0.049)$      & $(0.049)$      & $(0.075)$      & $(0.045)$      & $(0.046)$ \\[2pt]
+        \rowcolor{ufblue!12}
+        IT Share
+          &                & $\mathbf{-0.564^{*}}$  & $\mathbf{-0.625^{*}}$  &  & $-1.478^{***}$ \\
+        \rowcolor{ufblue!12}
+          &                & $(0.322)$      & $(0.320)$      &                & $(0.236)$ \\[2pt]
+        \rowcolor{ufblue!12}
+        EPA $\times$ IT Share
+          &                &                & $\mathbf{+1.048^{**}}$ &       &   \\
+        \rowcolor{ufblue!12}
+          &                &                & $(0.477)$      &                &   \\[2pt]
+        IT Intensity
+          &                &                &                & $-0.006^{***}$ &   \\
+          &                &                &                & $(0.002)$      &   \\
+        \midrule
+        Obs. & 46,160 & 45,647 & 45,647 & 45,317 & 42,305 \\
+        \bottomrule
+    \end{tabular}}
+
+    \vspace{0.15cm}
+    \tiny\textit{Clustered (pair) SEs in parentheses.
+    $^{***}p{<}0.01$, $^{**}p{<}0.05$, $^{*}p{<}0.10$.
+    Cols (1)--(4): PPML. Col (5): OLS on $\log(\text{trade})$, zero-trade pairs excluded.}
+
+\end{frame}
+
+\begin{frame}{Economic Magnitudes}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Marginal Effects (PPML col 2)}
+                \begin{tabular}{lcc}
+                    \toprule
+                    Percentile & IT Share & \% change \\
+                    \midrule
+                    p10   & 0.005 & $-0.3\%$  \\
+                    Mean  & 0.116 & \alert{$-6.3\%$}  \\
+                    p90   & 0.255 & \alert{$-13.4\%$} \\
+                    \bottomrule
+                \end{tabular}\\[4pt]
+                \small\textit{\% change $= 100(\exp(\hat\beta \times \text{IT}) - 1)$}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{EPA Interaction (col 3)}
+                Net effect at mean IT (0.116) \emph{with} EPA:\\[4pt]
+                $-0.625 + 1.048 \times 0.116 = \alert{-0.504}$\\[6pt]
+                Sign reversal requires IT $> 0.60$\\
+                (outside sample support)
+            \end{block}
+            \medskip
+            \small \textbf{Result:} EPAs meaningfully attenuate but do not eliminate the
+            stumbling block at observed integration levels.
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Mechanisms \& Heterogeneity}
+
+\begin{frame}{Trade Direction Decomposition}
+
+    \begin{center}
+    {\small
+    \begin{tabular}{lccc}
+        \toprule
+        & Total Bilateral & ACP $\to$ EU & EU $\to$ ACP \\
+        \midrule
+        IT Share & $-0.564^{*}$ & $-0.059$ & \alert{$-1.027^{***}$} \\
+                 & $(0.322)$    & $(0.476)$ & $(0.254)$ \\[2pt]
+        EPA      & $-0.019$     & $+0.093$  & $-0.126^{***}$ \\
+                 & $(0.049)$    & $(0.084)$ & $(0.047)$ \\
+        \midrule
+        Obs.     & 45,647       & 45,647    & 45,647 \\
+        \bottomrule
+    \end{tabular}}
+    \end{center}
+
+    \medskip
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Key finding:} stumbling block is entirely an \alert{EU-to-ACP} phenomenon
+            \begin{itemize}
+                \item ACP exports to EU: unaffected ($-0.059$, n.s.)
+                \item EU exports to ACP: strongly negative ($-1.027^{***}$)
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Interpretation:} consistent with \textbf{import substitution}
+            \begin{itemize}
+                \item Rising intra-bloc integration displaces EU goods in ACP domestic markets
+                \item ACP primary-commodity exports to the EU face little intra-bloc competition
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}{REC-Level Heterogeneity}
+
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{OUTPUT/figures/rec_coef_plot.png}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{All 7 RECs: negative IT share coefficients}
+
+            \medskip
+            {\small
+            \begin{tabular}{lcc}
+                \toprule
+                REC & Coef. & Sig. \\
+                \midrule
+                EAC            & $-3.020$ & $***$ \\
+                ECOWAS         & $-2.980$ & $***$ \\
+                SADC           & $-2.354$ & $**$  \\
+                CARIFORUM      & $-2.327$ & $**$  \\
+                COMESA         & $-1.457$ & $*$   \\
+                Cent.\ Africa  & $-0.752$ & (n.s.) \\
+                PIF            & $-30.92$ & (unstable) \\
+                \bottomrule
+            \end{tabular}}
+
+            \medskip
+            \small Sign unanimity across all RECs is the strongest result.
+            Five of six interpretable estimates are significant.
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}{Marginal Effects Curve}
+
+    \begin{center}
+        \includegraphics[width=0.72\textwidth]{OUTPUT/figures/marginal_effects_it_share.png}
+    \end{center}
+
+    \small Shaded area: 95\% CI. Dotted vertical lines: REC mean IT shares.
+    Dot-dash lines: IQR. Wide CI reflects the $p<0.10$ significance of the main coefficient.
+
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Robustness}
+
+\begin{frame}{Robustness: Specification}
+
+    {\small
+    \begin{tabular}{lccccc}
+        \toprule
+        & \makecell{Baseline\\PPML} & \makecell{NB-PML} &
+          \makecell{OLS\\$\log(1{+}y)$} & \makecell{Excl.\\CARIFORUM} & \makecell{Excl.\\PIF} \\
+        \midrule
+        IT Share & $-0.564^{*}$ & $-0.458$ & $+4.689^{***}$ & $-0.420$ & $-0.506$ \\
+                 & $(0.322)$    & $(0.360)$ & $(0.562)$      & $(0.340)$ & $(0.318)$ \\
+        \midrule
+        Obs.     & 45,647 & 45,647 & 45,955 & 36,752 & 36,846 \\
+        \bottomrule
+    \end{tabular}}
+
+    \medskip
+
+    \begin{itemize}
+        \item \textbf{NB-PML}: $-0.458$ ($\approx 81\%$ of PPML)---overdispersion is
+              not biasing PPML standard errors
+        \item \textbf{OLS $\log(1+y)$}: sign reversal is a known artefact near zero;
+              \alert{not interpretable}
+        \item \textbf{Excl.\ CARIFORUM / PIF}: both negative; lose significance as expected
+              from reduced cross-bloc variation
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Robustness: Sample Sensitivity}
+
+    {\small
+    \begin{tabular}{lcccccc}
+        \toprule
+        & Baseline & From 1998 & Excl.\ S.Afr & Excl.\ Nigeria & Excl.\ SOM+ERI & Excl.\ SACU \\
+        \midrule
+        IT Share & $-0.564^{*}$ & $-1.336^{***}$ & $-0.460$ & $-0.344$ & $-0.569^{*}$ & $-1.590^{***}$ \\
+                 & $(0.322)$    & $(0.326)$      & $(0.357)$ & $(0.317)$ & $(0.322)$    & $(0.403)$ \\
+        \midrule
+        Obs. & 45,647 & 42,644 & 45,054 & 45,054 & 44,461 & 42,682 \\
+        \bottomrule
+    \end{tabular}}
+
+    \medskip
+
+    \begin{itemize}
+        \item \textbf{From 1998}: $-1.336^{***}$---early sparse BACI years attenuate the baseline
+        \item \textbf{Excl.\ S.\ Africa / Nigeria}: lose significance---dominant traders carry
+              identification weight; an expected, not alarming, loss
+        \item \textbf{Excl.\ SACU}: $-1.590^{***}$---\alert{imputation attenuates, not drives, the result}
+        \item Aggregate $-0.564$ is at the \textbf{conservative end} of the full distribution
+              ($-0.36$ to $-3.02$ across all cuts and RECs)
+    \end{itemize}
+
+\end{frame}
+
+% ---------------------------------------------------------------
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+
+    \begin{block}{Main finding}
+        Strong, consistent \textbf{stumbling-block} effect of intra-ACP regional integration
+        on EU-ACP bilateral trade---robust across specifications, RECs, and subsamples.
+    \end{block}
+
+    \medskip
+
+    \textbf{What drives it?}
+    \begin{itemize}
+        \item Effect is entirely in EU exports to ACP markets ($-1.027^{***}$), not
+              ACP exports to the EU ($-0.059$, n.s.)
+        \item Consistent with import substitution: rising intra-bloc integration displaces
+              EU goods in ACP domestic markets
+        \item EPAs moderate but do not eliminate the effect at observed integration levels
+    \end{itemize}
+
+    \medskip
+
+    \textbf{Policy implications}
+    \begin{itemize}
+        \item EPA conditionality design should account for the trade-diverting phase of integration
+        \item EPAs and regional integration are most synergistic when advancing \emph{simultaneously}
+        \item At SADC mean IT share (27\%): estimated $-14.2\%$ bilateral trade with the
+              EU---a significant development consequence for smaller SADC members
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \begin{center}
+        {\Huge\textbf{Thank You}}
+
+        \vspace{0.8cm}
+
+        {\Large Questions?}
+
+        \vspace{0.8cm}
+
+        Noah Damski\\[4pt]
+        \texttt{noah.damski@ufl.edu}\\[6pt]
+        Department of Economics, University of Florida
+    \end{center}
+\end{frame}
+
+% ---------------------------------------------------------------
+\appendix
+
+\begin{frame}{Appendix: Directional Results (Full Table)}
+    {\tiny
+    \begin{tabular}{lccc}
+        \toprule
+        & Total Bilateral & ACP Exports to EU & EU Exports to ACP \\
+        \midrule
+        $\ln$(Distance)  & $-1.786^{***}$ & $-2.850^{***}$ & $-0.730$ \\
+                         & $(0.644)$      & $(0.997)$      & $(0.543)$ \\
+        Common Language  & $1.118^{***}$  & $0.664^{***}$  & $1.567^{***}$ \\
+                         & $(0.223)$      & $(0.254)$      & $(0.282)$ \\
+        Colonial Tie     & $0.188$        & $0.117$        & $0.220$ \\
+                         & $(0.235)$      & $(0.211)$      & $(0.321)$ \\
+        EPA              & $-0.019$       & $+0.093$       & $-0.126^{***}$ \\
+                         & $(0.049)$      & $(0.084)$      & $(0.047)$ \\
+        IT Share         & $-0.564^{*}$   & $-0.059$       & $-1.027^{***}$ \\
+                         & $(0.322)$      & $(0.476)$      & $(0.254)$ \\
+        \midrule
+        Obs.             & 45,647         & 45,647         & 45,647 \\
+        \bottomrule
+    \end{tabular}}
+    \vspace{0.1cm}\\
+    \tiny\textit{PPML. Clustered (pair) SEs. $^{***}p{<}0.01$, $^{**}p{<}0.05$, $^{*}p{<}0.10$.}
+\end{frame}
+
+\begin{frame}{Appendix: REC Subsamples (Full Table)}
+    {\tiny
+    \begin{tabular}{lccccccc}
+        \toprule
+        & ECOWAS & Cent.\ Afr. & SADC & EAC & COMESA & CARIFORUM & PIF \\
+        \midrule
+        IT Share
+          & $-2.980^{***}$ & $-0.752$ & $-2.354^{**}$ & $-3.020^{***}$
+          & $-1.457^{*}$ & $-2.327^{**}$ & $-30.92^{***}$ \\
+          & $(0.601)$ & $(1.318)$ & $(0.932)$ & $(0.780)$
+          & $(0.758)$ & $(1.006)$ & $(9.213)$ \\[2pt]
+        EPA
+          & $-0.039$ & $-0.208$ & $+0.408^{***}$ & ---
+          & $-0.219^{*}$ & $-0.373^{*}$ & $+0.236$ \\
+          & $(0.048)$ & $(0.159)$ & $(0.117)$ & ---
+          & $(0.129)$ & $(0.196)$ & $(0.213)$ \\
+        \midrule
+        Obs.
+          & 8,975 & 4,151 & 4,744 & 2,965 & 7,116 & 8,895 & 8,801 \\
+        \bottomrule
+    \end{tabular}}
+    \vspace{0.1cm}\\
+    \tiny\textit{PPML. Clustered (pair) SEs.
+    EAC: EPA $= 0$ throughout (collinear with year FE).
+    PIF: model instability (positive distance coefficient)---do not interpret.
+    $^{***}p{<}0.01$, $^{**}p{<}0.05$, $^{*}p{<}0.10$.}
+\end{frame}
+
+\end{document}

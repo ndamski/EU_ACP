@@ -1,0 +1,43 @@
+
+\begingroup
+\centering
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+                                   & China trade    & US trade       & EU trade (China-share control) & EU trade (US-share control) \\   
+   Model:                          & (1)            & (2)            & (3)                            & (4)\\  
+   \midrule
+   \emph{Variables}\\
+   ln(Intra-REC trade)             & -0.0465        & 0.0345         & 0.1175$^{**}$                  & 0.1185$^{**}$\\   
+                                   & (0.0389)       & (0.0857)       & (0.0526)                       & (0.0510)\\   
+   ln(Extra-regional non-EU trade) & 0.9527$^{***}$ & 0.8962$^{***}$ & 0.3031$^{***}$                 & 0.3910$^{***}$\\   
+                                   & (0.1415)       & (0.1181)       & (0.0629)                       & (0.0791)\\   
+   ln(Distance)                    &                &                & -1.518                         & -1.524\\   
+                                   &                &                & (1.078)                        & (1.086)\\   
+   Common Language                 &                &                & 0.8713$^{***}$                 & 0.8700$^{***}$\\   
+                                   &                &                & (0.2182)                       & (0.2174)\\   
+   Colonial Tie                    &                &                & 0.3596$^{*}$                   & 0.3564$^{*}$\\   
+                                   &                &                & (0.2009)                       & (0.2003)\\   
+   EPA (=1 in force)               &                &                & -0.0764                        & 0.0428\\   
+                                   &                &                & (0.0849)                       & (0.0784)\\   
+   China trade share               &                &                & -0.8453$^{*}$                  &   \\   
+                                   &                &                & (0.4707)                       &   \\   
+   us\_share                       &                &                &                                & -1.732$^{***}$\\   
+                                   &                &                &                                & (0.4396)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   ACP country                     & Yes            & Yes            & Yes                            & Yes\\  
+   year                            & Yes            & Yes            &                                & \\  
+   EU-partner $\times$ year        &                &                & Yes                            & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                    & 1,564          & 1,586          & 39,659                         & 39,659\\  
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Clustered (ACP country) standard-errors in parentheses}}\\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+ 
+\par \raggedright 
+Columns 1-2: same disjoint specification as Table 4 (ln(Intra-REC trade), ln(Extra-regional non-EU trade)), collapsed to one row per ACP country-year with acp\_iso3 + year fixed effects, China's or the US's bilateral trade substituted as the dependent variable in place of EU trade -- there is no EU-partner dimension for either. Both coefficients positive alongside the positive EU-trade expansion elasticity in Table 4 is consistent with general growth rather than targeted diversion; a negative coefficient here alongside the positive EU result would indicate partner-specific diversion. Columns 3-4 ask the question from the other direction, on the standard EU-partner x year / ACP-country panel: does the EU-side expansion elasticity survive once China's, or the US's, own rising trade share is controlled for directly, rather than examined as a separate outcome. Standard errors clustered by ACP country.
+\par\endgroup
+
+

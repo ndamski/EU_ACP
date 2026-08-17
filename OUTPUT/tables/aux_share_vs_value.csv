@@ -1,0 +1,8 @@
+rec,delta_share,share_direction,delta_ln_value,value_direction,opposite_signs
+ECOWAS,-0.2145,falling,0.9643,rising,TRUE
+Central Africa,-0.2416,falling,0.9847,rising,TRUE
+SADC,-0.1662,falling,0.9343,rising,TRUE
+EAC,NA,NA,NA,NA,NA
+ESA,-0.22,falling,0.4826,rising,TRUE
+CARIFORUM,-0.085,falling,0.1118,rising,TRUE
+PIF,-0.0388,falling,0.9416,rising,TRUE

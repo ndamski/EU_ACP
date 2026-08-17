@@ -1,0 +1,11 @@
+contrast,delta,pct,ci_lo,ci_hi
++1 standard deviation,0.13,-27.6,-38.6,-14.5
+p25 to p75 (interquartile),0.1389,-29.2,-40.7,-15.4
+p10 to p90,0.2548,-46.9,-61.6,-26.5
+Pooled mean to ECOWAS mean,0.0272,-6.5,-9.7,-3.2
+Pooled mean to Central Africa mean,-0.0545,14.5,6.8,22.7
+Pooled mean to SADC mean,0.2195,-42,-56.2,-23.3
+Pooled mean to EAC mean,-0.1082,30.8,13.9,50.2
+Pooled mean to ESA mean,-0.0698,18.9,8.8,30
+Pooled mean to CARIFORUM mean,0.0371,-8.8,-13,-4.4
+Pooled mean to PIF mean,-0.0683,18.5,8.6,29.3

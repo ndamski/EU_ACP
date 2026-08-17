@@ -1,0 +1,46 @@
+
+\begingroup
+\centering
+\begin{tabular}{lccccc}
+   \tabularnewline \midrule \midrule
+                                 & Baseline       & \makecell{Ex-EU\\denominator}    & \makecell{EU component\\fixed}    & \makecell{Log decomp.\\(total)}    & \makecell{Log decomp.\\(non-EU)} \\      
+   Model:                        & (1)            & (2)                              & (3)                               & (4)                                & (5)\\  
+   \midrule
+   \emph{Variables}\\
+   ln(Distance)                  & -1.626         & -1.621                           & -1.620                            & -1.519                             & -1.516\\   
+                                 & (0.9951)       & (0.9956)                         & (0.9956)                          & (1.079)                            & (1.079)\\   
+   Common Language               & 0.8849$^{***}$ & 0.8857$^{***}$                   & 0.8858$^{***}$                    & 0.8694$^{***}$                     & 0.8714$^{***}$\\   
+                                 & (0.2157)       & (0.2155)                         & (0.2155)                          & (0.2179)                           & (0.2177)\\   
+   Colonial Tie                  & 0.3444$^{*}$   & 0.3441$^{*}$                     & 0.3440$^{*}$                      & 0.3584$^{*}$                       & 0.3581$^{*}$\\   
+                                 & (0.2003)       & (0.2002)                         & (0.2002)                          & (0.2006)                           & (0.2006)\\   
+   EPA (=1 in force)             & -0.0441        & -0.0282                          & -0.0270                           & -0.0518                            & -0.0550\\   
+                                 & (0.0662)       & (0.0663)                         & (0.0662)                          & (0.0834)                           & (0.0805)\\   
+   IT Share                      & -2.482$^{***}$ &                                  &                                   &                                    &   \\   
+                                 & (0.6509)       &                                  &                                   &                                    &   \\   
+   IT Share (ex-EU denominator)  &                & -0.2634                          &                                   &                                    &   \\   
+                                 &                & (0.5099)                         &                                   &                                    &   \\   
+   IT Share (EU component fixed) &                &                                  & -0.2938                           &                                    &   \\   
+                                 &                &                                  & (0.7162)                          &                                    &   \\   
+   ln(Intra-REC trade)           &                &                                  &                                   & 0.0168                             & 0.1000$^{*}$\\   
+                                 &                &                                  &                                   & (0.0475)                           & (0.0528)\\   
+   ln(Total trade)               &                &                                  &                                   & 0.6970$^{***}$                     &   \\   
+                                 &                &                                  &                                   & (0.0769)                           &   \\   
+   ln(Non-EU trade)              &                &                                  &                                   &                                    & 0.3551$^{***}$\\   
+                                 &                &                                  &                                   &                                    & (0.0661)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   EU-partner $\times$ year      & Yes            & Yes                              & Yes                               & Yes                                & Yes\\  
+   ACP country                   & Yes            & Yes                              & Yes                               & Yes                                & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                  & 41,258         & 41,258                           & 41,258                            & 39,659                             & 39,659\\  
+   \midrule \midrule
+   \multicolumn{6}{l}{\emph{Clustered (ACP country) standard-errors in parentheses}}\\
+   \multicolumn{6}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+ 
+\par \raggedright 
+Column (3) rescales the ex-EU share by each country's mean EU trade share, so its coefficient is directly comparable in magnitude to column (1); column (2)'s is not. Standard errors clustered by ACP country.
+\par\endgroup
+
+

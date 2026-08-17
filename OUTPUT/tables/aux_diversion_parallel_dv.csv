@@ -1,0 +1,11 @@
+partner,term,coefficient,std_error,n,t,sig
+China,ln_intra,-0.0465,0.0389,1564,-1.1934,
+China,ln_extra,0.9527,0.1415,1564,6.7349,***
+US,ln_intra,0.0345,0.0857,1586,0.4025,
+US,ln_extra,0.8962,0.1181,1586,7.5862,***
+EU (China-share control),ln_intra,0.1175,0.0526,39659,2.2342,**
+EU (China-share control),ln_extra,0.3031,0.0629,39659,4.8168,***
+EU (China-share control),china_share,-0.8453,0.4707,39659,-1.796,*
+EU (US-share control),ln_intra,0.1185,0.051,39659,2.3263,**
+EU (US-share control),ln_extra,0.391,0.0791,39659,4.9456,***
+EU (US-share control),us_share,-1.732,0.4396,39659,-3.9397,***
