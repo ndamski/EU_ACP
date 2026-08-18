@@ -19,11 +19,11 @@ library(ggplot2)
 # --- Build a static country -> REC lookup (current-day membership, ignoring
 # the time-varying spells -- a membership MAP is a point-in-time picture, not
 # a panel variable, so it uses each country's LATEST coded REC) -------------
-# NOTE (fixed 2026-08-13): KEN_UGA_REC and TZA_REC were missing from this
-# bind_rows(). REC_MEMBERSHIP_STATIC no longer carries KEN/UGA/TZA at all
-# (they were made time-varying in 01_build_panel.r -- see its line-346
-# comment), so without these two tables the join below silently drops all
-# three countries and only BDI/RWA show up as EAC on the map.
+# NOTE: KEN_UGA_REC and TZA_REC must be included in this bind_rows().
+# REC_MEMBERSHIP_STATIC no longer carries KEN/UGA/TZA at all (they were made
+# time-varying in 01_build_panel.r -- see its line-346 comment), so without
+# these two tables the join below silently drops all three countries and
+# only BDI/RWA show up as EAC on the map.
 rec_map_lookup <- bind_rows(
   REC_MEMBERSHIP_STATIC,
   MRT_REC     |> filter(year == max(year)) |> select(iso3, rec),
@@ -38,6 +38,15 @@ rec_map_lookup <- bind_rows(
 
 world <- ne_countries(scale = "medium", returnclass = "sf") |>
   left_join(rec_map_lookup, by = c("iso_a3" = "iso3"))
+
+# Africa-only panel below (coord_sf just clips the view -- it does not drop
+# rows -- so CARIFORUM/PIF countries would otherwise still supply their `rec`
+# levels to scale_fill_manual and appear as legend swatches with nothing
+# plotted under them). Blank their `rec` to NA here so the legend matches what
+# is actually drawn.
+AFRICA_RECS <- c("ECOWAS", "Central Africa", "SADC", "EAC", "ESA")
+world <- world |>
+  mutate(rec = if_else(rec %in% AFRICA_RECS, rec, NA_character_))
 
 make_panel <- function(world_sf, xlim, ylim, title) {
   ggplot(world_sf) +

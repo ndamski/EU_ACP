@@ -32,7 +32,7 @@ RUN_START <- Sys.time()
 # =============================================================================
 # 0. CONFIGURATION
 # =============================================================================
-PROJ_ROOT <- "C:/Users/ndams/Documents/EU_ACP_Trade_Paper"
+PROJ_ROOT <- "C:/Users/ndams/Documents/EU_ACP"
 
 if (!dir.exists(PROJ_ROOT))
   stop("PROJ_ROOT does not exist: ", PROJ_ROOT)
@@ -75,40 +75,19 @@ PANEL_RDS <- file.path(DIR_DATA, "eu_acp_panel.rds")
 # it here and nowhere else. "aux_" files are supporting output not numbered in
 # the paper.
 #
-# RENUMBERED 2026-08-11 to match reading order in paper_master_draft.md.
-# Old numbers (this section's numbering before today) in parens for anyone
-# cross-referencing an old draft or an old session handoff.
-#
-#   Table 1  main specifications                          (unchanged)
-#   Table 2  predicted trade differences (contrasts)       (unchanged)
-#   Table 3  MECHANICAL ENDOGENEITY BATTERY                (was Table 5)
-#   Table 4  ratio restriction test                        (was Table 3,
-#                                                            table_ratio_restriction.tex)
-#   Table 5  directional decomposition (naive share, EPA)  (was Table 3 --
-#                                                            note this is a
-#                                                            DIFFERENT old
-#                                                            "Table 3" than
-#                                                            the ratio-
-#                                                            restriction one
-#                                                            above; the two
-#                                                            were previously
-#                                                            distinguished
-#                                                            only by file name,
-#                                                            not by number,
-#                                                            which is exactly
-#                                                            the confusion this
-#                                                            renumbering fixes)
-#   Table 6  REC heterogeneity (interaction model)         (was Table 4)
-#   Table 7  robustness: estimators and measurement        (was Table 6)
-#   Table 8  robustness: sample restrictions                (was Table 7)
+#   Table 1  main specifications
+#   Table 2  predicted trade differences (contrasts)
+#   Table 3  mechanical endogeneity battery
+#   Table 4  ratio restriction test
+#   Table 5  directional decomposition (naive share, EPA)
+#   Table 6  REC heterogeneity (interaction model)
+#   Table 7  robustness: estimators and measurement
+#   Table 8  robustness: sample restrictions
 #   Table 9  external check: China/US as substitute outcome, and China's
-#            trade share as a covariate (three columns as of this session;
-#            sourced from table9_diversion_check.tex)
+#            trade share as a covariate (sourced from table9_diversion_check.tex)
 #   Table 10 direction-matched robustness: EU-component-fixed share and
-#            direction-matched ex-EU share (promoted this session from
-#            aux_directional_clean.tex, previously unnumbered and, it turned
-#            out, never actually cited anywhere in the paper -- see notes at
-#            its declaration below)
+#            direction-matched ex-EU share (sourced from
+#            aux_directional_clean.tex -- see notes at its declaration below)
 #   (clustering ladder, aux_cluster_sensitivity.tex, is NOT a numbered table
 #   in the paper -- see notes at its declaration below.)
 # -----------------------------------------------------------------------------
@@ -129,15 +108,13 @@ F_T10_DIRCLEAN  <- file.path(DIR_TAB, "table10_directional_construction.tex")
 # section that writes it (Section 8).
 F_AUX_CLUSTER   <- file.path(DIR_TAB, "aux_cluster_sensitivity.tex")
 F_AUX_CLUSTER_C <- file.path(DIR_TAB, "aux_cluster_sensitivity.csv")
-# aux_disjoint_decomposition.tex REMOVED entirely 2026-08-11 (was previously
-# corrected from "deprecated" to "keep" earlier the same session -- this is
-# a further revision, not a reversal of that correction). All 5 of its
-# columns are now accounted for elsewhere with no information lost: columns
-# (2)-(4) duplicated Table 4's Disjoint rows exactly; column (1) is fully
-# preserved as a console message in Section 10.3 (the "Baseline on the
-# log-spec sample" line); column (5), the China-share control, was relocated
-# to Section 10.3b next to the other China/diversion-partner checks, per
-# discussion with the user about where it thematically belongs.
+# aux_disjoint_decomposition.tex does not exist as a standalone file: its 5
+# columns are accounted for elsewhere with no information lost. Columns
+# (2)-(4) duplicate Table 4's Disjoint rows exactly; column (1) survives as
+# a console message in Section 10.3 (the "Baseline on the log-spec sample"
+# line); column (5), the China-share control, lives in Section 10.3b next
+# to the other China/diversion-partner checks. Do not re-add this file as a
+# separate rendering -- it would just re-print Table 4's own rows.
 
 F_AUX_LEAVEOUT  <- file.path(DIR_TAB, "aux_leave_one_rec_out.tex")
 F_AUX_SUMSTATS  <- file.path(DIR_TAB, "aux_summary_statistics.csv")
@@ -247,11 +224,11 @@ if (length(missing_cols) > 0)
        "\n  total_trade / intra_trade come from the intra_rec_share select() ",
        "in 01_build_panel.R. If they are absent the panel predates that change.")
 
-# Post-conference additions (2026-08-04). These reach the panel only through
-# the 2026-08-04 revision of 01_build_panel.R. Guarded rather than required,
-# so this script still runs against an older panel -- it just skips the four
-# new robustness columns instead of failing. Message fires once, here, rather
-# than being rediscovered separately at each point of use below.
+# These columns reach the panel only through 01_build_panel.R's currency-union
+# and concentration sections. Guarded rather than required, so this script
+# still runs against an older panel -- it just skips the four robustness
+# columns instead of failing. Message fires once, here, rather than being
+# rediscovered separately at each point of use below.
 NEW_CONTROL_COLS <- c("china_trade", "us_trade", "eu_partner_hhi", "export_hhi",
                       "peg_cemac", "peg_waemu", "peg_comoros",
                       "peg_cma", "peg_eccu", "peg_pacific",
@@ -358,7 +335,7 @@ if (HAS_NEW_CONTROLS) {
 # are imputable. The honest treatment is NA, which is what this block does.
 # ---------------------------------------------------------------------------
 SADC_COVERAGE_START <- 2000L
-SACU_ISO3 <- c("BWA","SWZ","LSO","NAM","ZAF")
+SACU_ISO3 <- c("BWA","SWZ","LSO","NAM","ZAF")  # customs union -- distinct from 01_build_panel.r's CMA_ISO3 (rand-peg currency union: LSO/NAM/SWZ only, excludes BWA + ZAF)
 
 sadc_pre <- panel |> filter(rec %in% "SADC", year < SADC_COVERAGE_START)
 message(sprintf(
@@ -485,14 +462,14 @@ if (mean(identity_check$gap, na.rm = TRUE) > 0.005) {
           call. = FALSE)
 }
 
-# --- china_share (added 2026-08, post-conference) ---------------------------
+# --- china_share ---------------------------------------------------------
 # Same construction as s_eu, filtered to CHN instead of EU_ISO3, using
 # china_trade carried through from 01_build_panel.R (there, since only that
 # script has access to raw `baci`; panel here has no China bilateral flows to
 # reconstruct the aggregate from the way eu_trade_ct is reconstructed above).
 # Purpose: rules out a China-side contamination of the "clean" non_eu_trade
-# denominator before a referee asks the question. Used only as an added
-# control in the deprecated Section 10.3 disjoint-decomposition output only -- never enters the baseline formula, and the deprecation there applies here too.
+# denominator before a referee asks the question. Used as an added control
+# in Section 10.3c's china-share check; never enters the baseline formula.
 if (HAS_NEW_CONTROLS) {
   panel <- panel |>
     mutate(china_share = if_else(total_trade > 0, china_trade / total_trade,
@@ -509,9 +486,9 @@ if (HAS_NEW_CONTROLS) {
                   max(panel$china_share, na.rm = TRUE),
                   sum(!is.na(panel$china_share))))
   
-  # --- us_share (added this session, for symmetry with china_share) ---------
-  # Same construction, filtered to us_trade instead of china_trade. Added
-  # for symmetry in Table 9's covariate check (both partners now tested both
+  # --- us_share --------------------------------------------------------------
+  # Same construction, filtered to us_trade instead of china_trade. Kept
+  # for symmetry in Table 9's covariate check (both partners tested both
   # as a substitute outcome AND as a share-control), not because a referee
   # is as likely to ask the US version unprompted -- China's rising trade
   # share is the more obvious confound story. Kept anyway since the
@@ -1101,21 +1078,16 @@ etable(
 # cleaner version of the same idea, and they are descriptive too.
 #
 # The two blocks below (10.2/10.3) are NOT numbered tables in the paper.
-# Both were revised twice in this same session -- first corrected from a
-# wrong "stale, delete" call to "keep," then revised again once it became
-# clear the underlying models feed Table 4 directly regardless of whether
-# they're also rendered into a separate table, and once the user weighed in
-# on where the unique content should live:
-#   - aux_directional_clean.tex TRIMMED to its 4 genuinely unique columns
+# Current state, for anyone tempted to add a rendering back:
+#   - aux_directional_clean.tex contains only its 4 genuinely unique columns
 #     (EU-fixed and direction-matched-ex-EU-share, both by direction). The
 #     other 4 fitted models it used to also render (m_logclean_acp/eu,
 #     m_logclean_m/x) are still fitted below and still feed Table 4 via
-#     restriction_tbl -- only the redundant second rendering was removed.
-#   - aux_disjoint_decomposition.tex REMOVED entirely. Confirmed NOT stale
-#     (columns matched aux_ratio_restrictions.csv exactly), but 3 of its 5
-#     columns were pure re-renders of Table 4's Disjoint rows. Column (1)
-#     (same-sample naive share) survives as a console message right where
-#     its model is fit. Column (5) (China-share control) was relocated to
+#     restriction_tbl -- they just aren't rendered a second time.
+#   - aux_disjoint_decomposition.tex does not exist as a file. 3 of its 5
+#     columns would be pure re-renders of Table 4's Disjoint rows. Column
+#     (1) (same-sample naive share) survives as a console message right
+#     where its model is fit. Column (5) (China-share control) lives in
 #     Section 10.3b, next to the other China/diversion-partner checks.
 # -----------------------------------------------------------------------------
 
@@ -1248,12 +1220,9 @@ message(sprintf(
 
 # --- 10.3 Disjoint decomposition  -- feeds Table 4 (via rr_orth/_acp/_eu ----
 # below, bound into restriction_tbl at Section 10.6); NOT rendered as its own
-# table. An earlier version of this script rendered these same three models
-# again as a standalone aux_disjoint_decomposition.tex, which was pure
-# duplication of Table 4's Disjoint rows -- removed 2026-08-11. Nothing lost:
-# report_decomp() below already prints full numbers to console regardless of
-# whether a model also appears in a rendered table, and the numbers this
-# fed are the same numbers Table 4 already publishes.
+# table -- rendering these three models again would just duplicate Table 4's
+# Disjoint rows. report_decomp() below prints full numbers to console
+# regardless of whether a model also appears in a rendered table.
 # ------------------------------------------------------------------------
 # ln_intra and ln_noneu overlap: intra-regional trade is part of non-EU trade.
 # The coefficient on ln_intra is therefore already a composition effect, but
@@ -1307,7 +1276,7 @@ message(sprintf(
 
 
 # --- 10.3b DIVERSION CHECK: does integration move with or against other -----
-#           major partners? (Added 2026-08-05, handoff-2 items 5+6 merged.)
+#           major partners?
 # The disjoint decomposition above (10.3) just established that ln(intra) and
 # ln(extra non-EU trade) are BOTH positive: in aggregate, regional integration
 # does not crowd out non-EU trade generally. That is evidence against classic
@@ -1341,15 +1310,7 @@ if (HAS_NEW_CONTROLS) {
   country_year <- panel |>
     filter(!is.na(ln_intra), !is.na(ln_extra)) |>
     distinct(acp_iso3, year, rec, china_trade, us_trade, ln_intra, ln_extra)
-  
-  f_china_dv <- as.formula("china_trade ~ ln_intra + ln_extra | acp_iso3 + year")
-  f_us_dv    <- as.formula("us_trade    ~ ln_intra + ln_extra | acp_iso3 + year")
-  
-  m_china_dv <- tryCatch(fepois(f_china_dv, data = country_year, cluster = ~acp_iso3),
-                         error = function(e) { warning("China parallel-DV failed: ", conditionMessage(e)); NULL })
-  m_us_dv    <- tryCatch(fepois(f_us_dv,    data = country_year, cluster = ~acp_iso3),
-                         error = function(e) { warning("US parallel-DV failed: ", conditionMessage(e)); NULL })
-  
+
   report_dv <- function(m, label) {
     if (is.null(m)) return(invisible(NULL))
     message(sprintf(
@@ -1363,100 +1324,74 @@ if (HAS_NEW_CONTROLS) {
       stars(coef(m)[["ln_extra"]], se(m)[["ln_extra"]]),
       nobs(m)))
   }
-  report_dv(m_china_dv, "China trade")
-  report_dv(m_us_dv,    "US trade")
-  
-  # --- 10.3c China-share control (as opposed to 10.3b's parallel-DV test ----
-  # above them). Relocated 2026-08-11 from Section 10.3, where it sat
-  # awkwardly attached to the disjoint-decomposition table that has since
-  # been removed as duplicative -- it belongs here thematically, alongside
-  # the other China/diversion-partner checks, not there.
-  # Different question from 10.3b: that asks "does China's OWN trade move
-  # with or against integration" (China as DV); this asks "does the EU-side
-  # expansion elasticity survive once China's rising trade share is
-  # controlled for directly" (china_share as a covariate in the EU-trade
-  # regression). Preempts the referee question the mechanical argument
-  # invites once stated: "you cleaned the EU out of the denominator -- is
-  # China doing something similar to your identification?"
-  m_logorth_china <- NULL
-  if (HAS_NEW_CONTROLS) {
-    f_logorth_china  <- mk("total_bilateral", "ln_intra + ln_extra + china_share")
-    m_logorth_china  <- fit_ppml(f_logorth_china, panel)
-    message(sprintf(
-      "Expansion elasticity with China share controlled: %+.4f (SE %.4f) | without: %+.4f (SE %.4f)",
-      coef(m_logorth_china)[["ln_intra"]], se(m_logorth_china)[["ln_intra"]],
-      b_exp, se_exp))
-    message(sprintf("  china_share coefficient: %+.4f (SE %.4f, t %+.2f)",
-                    coef(m_logorth_china)[["china_share"]],
-                    se(m_logorth_china)[["china_share"]],
-                    coef(m_logorth_china)[["china_share"]] / se(m_logorth_china)[["china_share"]]))
+
+  # Parallel-DV test: does the partner's OWN trade move with or against
+  # integration (partner trade as DV, on the collapsed acp_iso3-year panel).
+  fit_parallel_dv <- function(dv_col, label) {
+    f <- as.formula(paste0(dv_col, " ~ ln_intra + ln_extra | acp_iso3 + year"))
+    m <- tryCatch(fepois(f, data = country_year, cluster = ~acp_iso3),
+                  error = function(e) { warning(label, " parallel-DV failed: ", conditionMessage(e)); NULL })
+    report_dv(m, label)
+    m
   }
-  
-  # --- 10.3d US-share control (added this session, for symmetry with 10.3c) -
-  # Same question as 10.3c, substituting us_share for china_share: does the
-  # expansion elasticity survive once the US's own trade share is controlled
-  # for directly. Added purely for symmetry -- China's rising share is the
-  # more obvious confound story a referee would raise unprompted, but there
-  # was no principled reason to leave the US case untested once the pattern
-  # existed to copy.
-  m_logorth_us <- NULL
-  if (HAS_NEW_CONTROLS) {
-    f_logorth_us  <- mk("total_bilateral", "ln_intra + ln_extra + us_share")
-    m_logorth_us  <- fit_ppml(f_logorth_us, panel)
+  m_china_dv <- fit_parallel_dv("china_trade", "China trade")
+  m_us_dv    <- fit_parallel_dv("us_trade",    "US trade")
+
+  # --- 10.3c/10.3d partner-share controls -------------------------------
+  # Different question from the parallel-DV test above: does the EU-side
+  # expansion elasticity survive once the partner's own rising trade share
+  # is controlled for directly (as a covariate in the EU-trade regression),
+  # rather than examined as a separate DV. China's share preempts the
+  # referee question the mechanical argument invites once stated: "you
+  # cleaned the EU out of the denominator -- is China doing something
+  # similar to your identification?" The US case (10.3d) is added purely
+  # for symmetry -- China's rising share is the more obvious confound story
+  # a referee would raise unprompted, but there was no principled reason to
+  # leave the US case untested once the pattern existed to copy.
+  fit_share_control <- function(share_col, label) {
+    f <- mk("total_bilateral", paste0("ln_intra + ln_extra + ", share_col))
+    m <- fit_ppml(f, panel)
     message(sprintf(
-      "Expansion elasticity with US share controlled: %+.4f (SE %.4f) | without: %+.4f (SE %.4f)",
-      coef(m_logorth_us)[["ln_intra"]], se(m_logorth_us)[["ln_intra"]],
-      b_exp, se_exp))
-    message(sprintf("  us_share coefficient: %+.4f (SE %.4f, t %+.2f)",
-                    coef(m_logorth_us)[["us_share"]],
-                    se(m_logorth_us)[["us_share"]],
-                    coef(m_logorth_us)[["us_share"]] / se(m_logorth_us)[["us_share"]]))
+      "Expansion elasticity with %s share controlled: %+.4f (SE %.4f) | without: %+.4f (SE %.4f)",
+      label, coef(m)[["ln_intra"]], se(m)[["ln_intra"]], b_exp, se_exp))
+    message(sprintf("  %s coefficient: %+.4f (SE %.4f, t %+.2f)",
+                    share_col, coef(m)[[share_col]], se(m)[[share_col]],
+                    coef(m)[[share_col]] / se(m)[[share_col]]))
+    m
   }
-  
+  m_logorth_china <- fit_share_control("china_share", "China")
+  m_logorth_us    <- fit_share_control("us_share",    "US")
+
   dv_models <- list(m_china_dv, m_us_dv)
   dv_headers <- c("China trade", "US trade")
   dv_keep <- !vapply(dv_models, is.null, logical(1))
-  
+
   if (any(dv_keep) || !is.null(m_logorth_china) || !is.null(m_logorth_us)) {
+    # Rows for the parallel-DV models (partner trade as DV) and the
+    # share-control models (partner share as covariate on the EU-trade DV).
+    # The share-control rows were previously only printed to console
+    # (message()), never written to a file -- included here so the number
+    # has a durable, checkable source rather than being carried by hand
+    # between paper drafts.
+    dv_rows <- function(m, partner) {
+      if (is.null(m)) return(NULL)
+      tibble(partner = partner, term = c("ln_intra", "ln_extra"),
+             coefficient = c(coef(m)[["ln_intra"]], coef(m)[["ln_extra"]]),
+             std_error   = c(se(m)[["ln_intra"]],   se(m)[["ln_extra"]]),
+             n = nobs(m))
+    }
+    share_rows <- function(m, partner, share_col) {
+      if (is.null(m)) return(NULL)
+      tibble(partner = partner, term = c("ln_intra", "ln_extra", share_col),
+             coefficient = c(coef(m)[["ln_intra"]], coef(m)[["ln_extra"]], coef(m)[[share_col]]),
+             std_error   = c(se(m)[["ln_intra"]],   se(m)[["ln_extra"]],   se(m)[[share_col]]),
+             n = nobs(m))
+    }
     diversion_tbl <- bind_rows(
-      if (!is.null(m_china_dv)) tibble(
-        partner = "China", term = c("ln_intra", "ln_extra"),
-        coefficient = c(coef(m_china_dv)[["ln_intra"]], coef(m_china_dv)[["ln_extra"]]),
-        std_error   = c(se(m_china_dv)[["ln_intra"]],   se(m_china_dv)[["ln_extra"]]),
-        n = nobs(m_china_dv)),
-      if (!is.null(m_us_dv)) tibble(
-        partner = "US", term = c("ln_intra", "ln_extra"),
-        coefficient = c(coef(m_us_dv)[["ln_intra"]], coef(m_us_dv)[["ln_extra"]]),
-        std_error   = c(se(m_us_dv)[["ln_intra"]],   se(m_us_dv)[["ln_extra"]]),
-        n = nobs(m_us_dv)),
-      # China-share-as-covariate check (10.3c): a different question from the
-      # two rows above -- not "does China's own trade move with integration"
-      # but "does the EU-side expansion elasticity survive once China's
-      # rising trade share is controlled for directly". Previously only
-      # printed to console (message()), never written to a file -- added here
-      # so the number has a durable, checkable source rather than being
-      # carried by hand between paper drafts.
-      if (!is.null(m_logorth_china)) tibble(
-        partner = "EU (China-share control)",
-        term = c("ln_intra", "ln_extra", "china_share"),
-        coefficient = c(coef(m_logorth_china)[["ln_intra"]],
-                        coef(m_logorth_china)[["ln_extra"]],
-                        coef(m_logorth_china)[["china_share"]]),
-        std_error   = c(se(m_logorth_china)[["ln_intra"]],
-                        se(m_logorth_china)[["ln_extra"]],
-                        se(m_logorth_china)[["china_share"]]),
-        n = nobs(m_logorth_china)),
-      # US-share-as-covariate check (10.3d): mirrors 10.3c for symmetry.
-      if (!is.null(m_logorth_us)) tibble(
-        partner = "EU (US-share control)",
-        term = c("ln_intra", "ln_extra", "us_share"),
-        coefficient = c(coef(m_logorth_us)[["ln_intra"]],
-                        coef(m_logorth_us)[["ln_extra"]],
-                        coef(m_logorth_us)[["us_share"]]),
-        std_error   = c(se(m_logorth_us)[["ln_intra"]],
-                        se(m_logorth_us)[["ln_extra"]],
-                        se(m_logorth_us)[["us_share"]]),
-        n = nobs(m_logorth_us))
+      dv_rows(m_china_dv, "China"),
+      dv_rows(m_us_dv,    "US"),
+      share_rows(m_logorth_china, "EU (China-share control)", "china_share"),
+      share_rows(m_logorth_us,    "EU (US-share control)",    "us_share")
     ) |>
       mutate(t = coefficient / std_error, sig = stars(coefficient, std_error),
              across(c(coefficient, std_error, t), \(x) round(x, 4)))
@@ -1499,7 +1434,7 @@ if (HAS_NEW_CONTROLS) {
 }
 
 
-# --- 10.3c SHARE-VS-VALUE ILLUSTRATION (handoff-2 item 6) --------------------
+# --- 10.3c SHARE-VS-VALUE ILLUSTRATION ---------------------------------------
 # Tyler Sotomayor's memo (p.22) shows EU import SHARE falling for Rwanda and
 # Burundi post-2009 while EU import VALUE rose -- a concrete, independently
 # derived illustration of exactly the measurement problem this paper proves
@@ -1550,17 +1485,15 @@ if (any(share_value_tbl$opposite_signs)) {
 write_csv(share_value_tbl, file.path(DIR_TAB, "aux_share_vs_value.csv"))
 
 
-# --- 10.4 Directional versions  ->  Table 10 as of this session (previously --
-#     unnumbered and, on inspection, never actually cited anywhere in the
-#     paper despite containing genuinely unique content -- promoted after
-#     citing it in Section 5.3, where it complicates rather than confirms
-#     the side-matched directional asymmetry). TRIMMED 2026-08-11 to its 4
-#     genuinely unique columns (EU-fixed and direction-matched-ex-EU-share,
-#     both by direction). The other 4 model fits below (m_logclean_acp/eu,
+# --- 10.4 Directional versions  ->  Table 10 --------------------------------
+#     Cited in Section 5.3, where it complicates rather than confirms the
+#     side-matched directional asymmetry. Contains only its 4 genuinely
+#     unique columns (EU-fixed and direction-matched-ex-EU-share, both by
+#     direction). The other 4 model fits below (m_logclean_acp/eu,
 #     m_logclean_m/x) are KEPT -- Table 4 depends on them via
 #     rr_clean_acp/eu and rr_side_m/x, bound into restriction_tbl at Section
-#     10.6 -- but no longer rendered into this table, since doing so just
-#     re-printed Table 4's own Overlapping/Side-matched rows a second
+#     10.6 -- but are not rendered into this table, since doing so would
+#     just re-print Table 4's own Overlapping/Side-matched rows a second
 #     time. -----------------------
 # The pooled results say the negative share coefficient lives in the
 # denominator. This asks whether that holds direction by direction, and in
@@ -1763,11 +1696,9 @@ if (!all(restriction_tbl$rejected))
 write_csv(restriction_tbl, F_AUX_RESTRICT)
 
 # --- 10.6b LaTeX rendering of the same table ---------------------------------
-# Added 2026-08-04. Previously this test existed only as a CSV plus console
-# text -- the formatted version quoted in the paper had to be retyped by hand
-# from those numbers every time the panel was rebuilt, which is exactly the
-# kind of manual step that produces a drifted number nobody notices. This
-# reproduces the same booktabs layout mechanically from restriction_tbl.
+# Kept separate from a hand-typed table so the formatted version quoted in
+# the paper can't drift from restriction_tbl when the panel is rebuilt --
+# reproduces the same booktabs layout mechanically.
 rt_tex <- restriction_tbl |>
   mutate(dag = if_else(rejected, "\\textsuperscript{\\dag}", ""))
 
@@ -1904,9 +1835,7 @@ etable(
 )
 
 # --- 11.5 Does any currency union or export concentration explain a bloc's --
-#           REC deviation? (Added 2026-08-04, post-conference; generalized
-#           2026-08-05 from a Central-Africa-only peg test to all six unions
-#           PLUS export concentration, fitted together.)
+#           REC deviation?
 # The REC heterogeneity model above estimates a deviation term for each bloc
 # relative to ECOWAS. CEMAC and Comoros are EUR pegs; CMA, ECCU and Pacific
 # dollarization are not (rand, USD, NZD/AUD respectively) but are the only
@@ -1920,17 +1849,17 @@ etable(
 # explains a deviation from them. export_hhi is reported standalone for the
 # same structural reason: it is a continuous, economy-wide measure, not a
 # REC-specific dummy, even though Central Africa's oil/commodity concentration
-# is the case that motivated adding it (handoff item 2) -- reading its
-# interaction alongside the before/after dev_CAF numbers below is still
-# informative even without a formal per-REC test.
+# is the case that motivated adding it -- reading its interaction alongside
+# the before/after dev_CAF numbers below is still informative even without a
+# formal per-REC test.
 #
 # All interactions are fitted in ONE combined model together with the REC
 # deviation terms, not one at a time: currency unions are on nearly the same
 # footing as REC identity (CEMAC-Central Africa, WAEMU-ECOWAS overlap almost
 # completely), and export concentration is correlated with REC identity too
-# (Central Africa's oil exporters are exactly why item 2 was prioritized), so
-# fitting these one at a time would let each candidate explanation silently
-# re-absorb variation another one already claims.
+# (Central Africa's oil exporters are exactly why export_hhi matters here),
+# so fitting these one at a time would let each candidate explanation
+# silently re-absorb variation another one already claims.
 #
 # This is diagnostic, not folded into Table 6, since it changes the
 # specification Table 6 is built around; written to its own aux CSV so the
@@ -2149,9 +2078,9 @@ message(sprintf("Pooled + GDP/pop: %.4f (SE %.4f, n=%d) | baseline %.4f (SE %.4f
 # the denominator problem in Section 10 intact and adds REC-size variation on
 # top. Reported because the earlier draft reported it; the text should say what
 # it does and does not add.
-# Three guarded additions (2026-08-04, post-conference). Each is its own
-# column rather than folded into one model, so each control's effect on the
-# it_share coefficient is visible individually rather than confounded together.
+# Each of these three controls is its own column rather than folded into one
+# model, so each control's effect on the it_share coefficient is visible
+# individually rather than confounded together.
 m_hhi <- m_ehhi <- m_peg <- m_linder <- NULL
 if (HAS_NEW_CONTROLS) {
   m_hhi <- tryCatch(fit_ppml(mk("total_bilateral", "it_share + eu_partner_hhi"), panel),

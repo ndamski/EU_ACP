@@ -7,62 +7,12 @@
 # "Regional Integration as a Stumbling Block: Gravity Evidence from EU-ACP Trade"
 #
 # -----------------------------------------------------------------------------
-# WHAT CHANGED IN THIS VERSION (2026-08-04) AND WHY
-# -----------------------------------------------------------------------------
-# (1) SHARE-BOUNDS CHECK NOW ENFORCED. `bad_share` (Section 6) was computed
-#     but never inspected -- a silent no-op sitting where the comment above it
-#     promises a guard against [0,1] violations. It now stops the script if
-#     any row fails, which is the one check capable of catching double-
-#     counting if FIX_TIMEVARYING_REC_PAIRS is ever switched on.
-#
-# (2) SECTION 13 COMMENT CORRECTED. It described a SACU donor-pool imputation
-#     step in 02_estimate_gravity.R that no longer exists (deleted per that
-#     script's own changelog item 6) and quoted a post-imputation SADC mean
-#     (0.2713) that predates both the coverage-rule rewrite and the confirmed
-#     current figure (0.324, from aux_summary_statistics.csv on the 2000-2021
-#     run). The comment now describes what Section 13 actually computes.
-#
-# (3) FOUR NEW COUNTRY-YEAR / COUNTRY-LEVEL VARIABLES, added for the post-
-#     conference robustness round (see session handoff 2026-08-04):
-#       - china_trade / china_exports / china_imports (Section 6): mirrors
-#         the non-EU trade construction, filtered to CHN, so script 02 can
-#         build a china_share control the same way it builds s_eu. Tests
-#         whether the "clean" non-EU denominator is itself contaminated by a
-#         rising third-party partner.
-#       - eu_partner_hhi (new Section 7.5): Herfindahl index of an ACP
-#         country's EU-side trade across the 28 EU partners, built from
-#         eu_acp_grid. No new data.
-#       - eur_peg / other_currency_union (new Section 3.5): static country
-#         flags for currency-union membership. NOTE: the handoff's proposed
-#         single "euro- or rand-pegged" dummy pooled two different pegs into
-#         one variable. CEMAC and WAEMU are EUR pegs (the theoretically
-#         relevant mechanism: reduced exchange-rate risk with EU trade
-#         specifically). The Common Monetary Area is a RAND peg and the ECCU
-#         is a USD peg -- neither reduces exchange-rate risk with the EU, so
-#         pooling them with CEMAC/WAEMU would muddy exactly the mechanism the
-#         variable is meant to isolate. Split into eur_peg (CEMAC + WAEMU) and
-#         other_currency_union (CMA + ECCU, retained for completeness, not
-#         expected to bear on the EU-trade mechanism).
-#       - gdp_pc_eu (Section 11): EU-partner GDP per capita, a Linder-type
-#         control, derived from gdp_eu / pop_eu already in hand from WDI.
-#
-#     NOT implemented this round (see session handoff for full detail on why):
-#       - HS-chapter export-concentration HHI (handoff items 2-3): requires
-#         re-aggregating BACI at HS-chapter level, which Section 5 currently
-#         collapses away, plus an EU MFN tariff schedule not sourced yet.
-#       - 2022-2024 refresh (item 7): requires annual BACI files and a fresh
-#         WDI pull not present in this environment.
-#       - EPA staggered-DiD (item 8): a new package (`did`) and an estimator
-#         redesign, not a control addition; belongs in 02 as its own
-#         deliberate step, not folded into this pass.
-# -----------------------------------------------------------------------------
-#
 # RUN WITH source(), NEVER BY PASTING INTO THE CONSOLE.
 #   source(file.path(PROJ_ROOT, "SCRIPTS", "01_build_panel.R"), echo = TRUE)
 # source() halts at the first error. Pasting continues past errors all the way
-# to the final write, which is how a serialized function ended up in
-# eu_acp_panel.rds on 2026-07-23. Section 14 blocks that specific failure three
-# separate ways now, but source() remains the actual fix.
+# to the final write, which is how a serialized function can end up in
+# eu_acp_panel.rds instead of the panel itself. Section 14 blocks that
+# specific failure three separate ways now, but source() remains the actual fix.
 # -----------------------------------------------------------------------------
 #
 # Panel ends in 2021: CEPII Gravity V202211 covers through 2021; extending to
@@ -116,7 +66,9 @@
 # Missing covariates:
 #   SOM/ERI GDP gaps: rows retained with gdp_acp = NA.
 #   PPML handles these via conditioning on trade flows; OLS drops them.
-#   SADC/SACU IT Share gaps: imputed in 02_estimate_gravity.R.
+#   SADC/SACU IT Share gaps: set to NA in 02_estimate_gravity.R (Section 2),
+#   not imputed -- see that section's comment for why donor-pool imputation
+#   was rejected.
 # =============================================================================
 
 set.seed(42)
@@ -132,7 +84,7 @@ library(WDI)
 # -----------------------------------------------------------------------------
 # 0.1 Paths - single root, everything else derived.
 #     Project tree:
-#       EU_ACP_Trade_Paper/
+#       EU_ACP/
 #       |- SCRIPTS/    01_build_panel.R, 02_estimate_gravity.R
 #       |- DATA/       eu_acp_panel.rds/.csv
 #       |   |- raw/    BACI_HS92_V202601/, Gravity_rds_V202211/
@@ -144,7 +96,7 @@ library(WDI)
 #       |- PAPER/      Word drafts - NOT touched by these scripts
 #       +- RESEARCH/   Obsidian notes - NOT touched by these scripts
 # -----------------------------------------------------------------------------
-PROJ_ROOT <- "C:/Users/ndams/Documents/EU_ACP_Trade_Paper"
+PROJ_ROOT <- "C:/Users/ndams/Documents/EU_ACP"
 
 if (!dir.exists(PROJ_ROOT))
   stop("PROJ_ROOT does not exist: ", PROJ_ROOT, "\n",
@@ -212,13 +164,13 @@ OVERWRITE_PANEL <- FALSE
 #     so legacy estimates are conservative with respect to this bug.
 #
 #   TRUE (CORRECTED): credits both sides of every time-varying pair. Effect is
-#     small but nonzero; it will move ECOWAS and PIF coefficients. Do not enable
-#     before the conference. When you do, rebuild to a new filename and report
-#     the delta rather than silently substituting.
+#     small but nonzero; it will move ECOWAS and PIF coefficients. If enabled,
+#     rebuild to a new filename and report the delta rather than silently
+#     substituting.
 #
-# Contrary to the earlier handoff note, this fix does NOT require the raw BACI
-# CSVs. Section 6 consumes `baci`, which loads from CACHE_BACI; the annual CSVs
-# are only read when that cache is being built.
+# This fix does NOT require the raw BACI CSVs. Section 6 consumes `baci`,
+# which loads from CACHE_BACI; the annual CSVs are only read when that cache
+# is being built.
 FIX_TIMEVARYING_REC_PAIRS <- FALSE
 
 # -----------------------------------------------------------------------------
@@ -343,9 +295,9 @@ REC_MEMBERSHIP_STATIC <- tribble(
   "LSO","SADC", "MOZ","SADC", "NAM","SADC", "ZAF","SADC",
   
   # EAC - EU-EAC EPA signed Sep 2016 but never provisionally applied; epa = 0.
-  # KEN/UGA/TZA removed 2026-08 and made time-varying (see KEN_UGA_REC and
-  # TZA_REC below) -- they did not negotiate as a unified EAC bloc until
-  # 2007. Before that, Kenya and Uganda negotiated under the ESA
+  # KEN/UGA/TZA are time-varying (see KEN_UGA_REC and TZA_REC below), not
+  # listed statically here -- they did not negotiate as a unified EAC bloc
+  # until 2007. Before that, Kenya and Uganda negotiated under the ESA
   # configuration and Tanzania under SADC (WTO Trade Policy Review of the
   # EAC, pre-2007; corroborated by academic EAC-EPA history). Coding them as
   # static EAC for the full panel misattributed their pre-2007 REC.
@@ -358,7 +310,7 @@ REC_MEMBERSHIP_STATIC <- tribble(
   # negotiating track. "ESA" is the correct label throughout; COMESA is the
   # institution, not the EPA negotiating group. If "COMESA" ever reappears in
   # REC_LEVELS, script 02's factor() call silently turns every ESA row into NA.
-  # SOM removed 2026-08 -- confirmed absent from the ESA EPA negotiating
+  # SOM is not listed here -- confirmed absent from the ESA EPA negotiating
   # group in every primary/institutional source checked (EU trade policy
   # page, tralac, ECDPM, EUR-Lex glossary). Somalia never signed or ratified
   # Cotonou or its revisions (no functioning government to do so since the
@@ -401,36 +353,27 @@ BDI_RWA_REC <- bind_rows(
     mutate(rec = "EAC")
 )
 
-# COD (DRC) -- REVISED 2026-08 (second pass). Original EPA-track-only
-# version blanked 1998-2002 to NA, discarding COD's unambiguous
-# institutional SADC membership (acceded 8 Sept 1998, 17th SADC Summit;
-# SADC's own member-state page) during years when it had no competing
-# affiliation to create a tiebreak problem. Unlike the EAC-vs-ESA/SADC
-# ambiguity that motivates EPA-track logic elsewhere in this table, COD had
-# exactly one clear regional home 1998-2002, so there is no reason to
-# discard it. Restored: NA 1995-1997 (not yet a SADC member at all), SADC
-# 1998-2002 (institutional, unambiguous), then EPA-track logic takes over
+# COD (DRC) carries three institutional affiliations across the sample: NA
+# 1995-1997 (not yet a SADC member), SADC 1998-2002 (acceded 8 Sept 1998,
+# 17th SADC Summit; SADC's own member-state page -- unambiguous, no
+# competing affiliation to create a tiebreak problem), then EPA-track logic
 # once a negotiating configuration exists: ESA 2003-2004, Central Africa
 # 2005-max(YEARS) (switch documented in ECDPM regional EPA brief;
 # corroborated by EEAS's current framing of DRC as part of "the Central
 # Africa configuration (CEMAC + DRC + Sao Tome)").
 #
-# CONFIRMED 2026-08-11: the two-year ESA window (2003-2004) is kept as its
-# own regime rather than collapsed into the surrounding SADC period.
-# Reasoning: (1) consistency -- every other ambiguous multi-year transition
-# in this table (KEN/UGA's 2003-2006 negotiating window, TZA's SADC->EAC
-# switch, TLS's accession) is handled the same way, as a short,
-# independently-sourced transitional category rather than folded into
-# whichever neighboring bloc is administratively convenient; treating COD
-# as the one exception would be inconsistent with no offsetting benefit.
-# (2) negligible empirical footprint either way -- COD's 2003-2004 ESA
+# The two-year ESA window (2003-2004) is kept as its own regime rather than
+# collapsed into the surrounding SADC period, for consistency with every
+# other ambiguous multi-year transition in this table (KEN/UGA's 2003-2006
+# negotiating window, TZA's SADC->EAC switch, TLS's accession), each handled
+# as a short, independently-sourced transitional category rather than folded
+# into whichever neighboring bloc is administratively convenient. The choice
+# has negligible empirical footprint either way -- COD's 2003-2004 ESA
 # window contributes 2 of ESA's 252 total country-years (< 1%,
-# aux_summary_statistics.csv), so this choice does not materially affect
-# ESA's aggregate statistics or the REC-interaction coefficient regardless
-# of which way it's coded. Table 0's ESA=14 count and footnote assume this
-# choice; if it is ever revisited, the defensible simplification remains
-# SADC 1998-2004, "Central Africa" 2005-max(YEARS) -- comment out the ESA
-# line below and extend the SADC range to do this.
+# aux_summary_statistics.csv). Table 0's ESA=14 count and footnote assume
+# this choice; the defensible simplification, if ever revisited, is SADC
+# 1998-2004, "Central Africa" 2005-max(YEARS) -- comment out the ESA line
+# below and extend the SADC range to do this.
 COD_REC <- bind_rows(
   tibble(iso3 = "COD", year = 1995:1997,       rec = NA_character_),
   tibble(iso3 = "COD", year = 1998:2002,       rec = "SADC"),
@@ -438,7 +381,7 @@ COD_REC <- bind_rows(
   tibble(iso3 = "COD", year = 2005:max(YEARS), rec = "Central Africa")
 )
 
-# SOM (Somalia) -- unchanged from first pass. Never part of the ESA EPA
+# SOM (Somalia). Never part of the ESA EPA
 # negotiating group (confirmed against EU trade policy page, tralac,
 # ECDPM, EUR-Lex glossary) and never signed/ratified Cotonou or its
 # revisions. Unlike COD/TZA below, Somalia has no unambiguous single-bloc
@@ -452,7 +395,7 @@ COD_REC <- bind_rows(
 # since it changes the 78-country universe referenced throughout Section 3.
 SOM_REC <- tibble(iso3 = "SOM", year = 1995:max(YEARS), rec = NA_character_)
 
-# KEN/UGA -- unchanged from first pass. Unlike COD and TZA, there is no
+# KEN/UGA. Unlike COD and TZA, there is no
 # defensible single-REC institutional fallback for 1995-2002: EAC only
 # re-entered force July 2000 as a bare treaty (customs union not until
 # 2005, common market 2010) and COMESA is deliberately excluded as a REC
@@ -473,12 +416,10 @@ KEN_UGA_REC <- bind_rows(
     mutate(rec = "EAC")
 )
 
-# TZA -- REVISED 2026-08 (second pass). Original version blanked 1995-2002
-# to NA and used SADC only from 2003. This discarded a real fact: Tanzania
-# has been a continuous SADC member since SADC's 1992 founding (SADCC
-# predecessor from 1980) -- well before this panel's 1995 start -- and
-# there is no competing single-bloc claim to create a tiebreak problem for
-# this period the way there is for KEN/UGA. Corroborating detail: Tanzania
+# TZA has been a continuous SADC member since SADC's 1992 founding (SADCC
+# predecessor from 1980) -- well before this panel's 1995 start -- and there
+# is no competing single-bloc claim to create a tiebreak problem for this
+# period the way there is for KEN/UGA. Corroborating detail: Tanzania
 # withdrew from COMESA in 2000 specifically BECAUSE it already held both
 # SADC and EAC memberships simultaneously and judged a third redundant
 # (Tanzanian parliamentary record, allAfrica.com; Daily News Tanzania) --
@@ -543,20 +484,18 @@ stage("membership")
 
 
 # =============================================================================
-# 3.5 CURRENCY UNION MEMBERSHIP (added 2026-08, post-conference; expanded
-#     2026-08-05 to cover Comoros and Pacific dollarization, and to grant each
-#     union its own dummy instead of pooling into eur_peg/other_currency_union)
+# 3.5 CURRENCY UNION MEMBERSHIP
 # =============================================================================
 # Static country flags -- all unions below predate 1995 for every member
 # listed, so this is a country-level flag, not a country-year variable,
 # matching the treatment of EPA_DATES and REC_MEMBERSHIP_STATIC elsewhere in
 # this script.
 #
-# Motivation (session handoff item 6): a euro peg is a direct, mechanical
-# reduction in exchange-rate risk with EU trade specifically, independent of
-# intra-REC integration, and was flagged as the strongest single candidate
-# for explaining rather than merely flagging the Central Africa outlier in
-# the REC heterogeneity results. Testing that meant not stopping at CEMAC:
+# Motivation: a euro peg is a direct, mechanical reduction in exchange-rate
+# risk with EU trade specifically, independent of intra-REC integration, and
+# is the strongest single candidate for explaining rather than merely
+# flagging the Central Africa outlier in the REC heterogeneity results.
+# Testing that meant not stopping at CEMAC:
 #
 #   - CEMAC and WAEMU: the CFA franc, pegged to the EUR. WAEMU sits almost
 #     entirely inside ECOWAS, CEMAC almost entirely inside Central Africa, so
@@ -588,7 +527,7 @@ stage("membership")
 CEMAC_ISO3   <- c("CMR","CAF","TCD","COG","GAB","GNQ")   # STP is NOT in CEMAC
 WAEMU_ISO3   <- c("BEN","BFA","CIV","GNB","MLI","NER","SEN","TGO")
 COMOROS_ISO3 <- c("COM")                                  # Comorian franc, EUR peg
-CMA_ISO3     <- c("LSO","NAM","SWZ")                      # rand peg, not ZAF itself
+CMA_ISO3     <- c("LSO","NAM","SWZ")                      # rand peg (currency union), not ZAF itself -- distinct from 02_estimate_gravity.r's SACU_ISO3 (customs union: adds BWA + ZAF)
 ECCU_ISO3    <- c("ATG","DMA","GRD","KNA","LCA","VCT")    # East Caribbean dollar, USD peg
 PACIFIC_DOLLAR_ISO3 <- c("COK","NIU","KIR","TUV")         # NZD (COK/NIU) or AUD (KIR/TUV)
 
@@ -666,6 +605,16 @@ stage("epa_dates")
 # =============================================================================
 # 5. BACI TRADE FLOWS
 # =============================================================================
+# Shared read for one annual BACI file. Used independently by Section 5 (below)
+# and Section 5.5's HS-chapter reload -- see the note at Section 5.5 for why
+# these are two separate reads, not a shared cache.
+read_baci_annual_file <- function(yr, dir = BACI_DIR, version = BACI_VERSION) {
+  f <- file.path(dir, paste0("BACI_HS92_Y", yr, "_", version, ".csv"))
+  if (!file.exists(f)) stop("Missing required annual file: ", f)
+  read_csv(f, col_types = cols(t = "i", i = "c", j = "c",
+                               k = "c", v = "d", q = "d"))
+}
+
 if (file.exists(CACHE_BACI)) {
   baci <- read_cache(CACHE_BACI, expect = list(baci  = BACI_VERSION,
                                                years = range(YEARS)))
@@ -701,10 +650,7 @@ if (file.exists(CACHE_BACI)) {
   
   message("Loading BACI (", min(YEARS), "-", max(YEARS), ") from annual files...")
   baci_raw <- map_dfr(YEARS, function(yr) {
-    f <- file.path(BACI_DIR, paste0("BACI_HS92_Y", yr, "_", BACI_VERSION, ".csv"))
-    if (!file.exists(f)) stop("Missing required annual file: ", f)
-    read_csv(f, col_types = cols(t = "i", i = "c", j = "c",
-                                 k = "c", v = "d", q = "d")) |>
+    read_baci_annual_file(yr) |>
       select(t, i, j, v) |>
       group_by(t, i, j) |>
       summarise(v = sum(v, na.rm = TRUE), .groups = "drop")
@@ -730,7 +676,7 @@ stage("baci")
 
 
 # =============================================================================
-# 5.5 EXPORT CONCENTRATION (HS-CHAPTER HHI) -- handoff item 2, added 2026-08-05
+# 5.5 EXPORT CONCENTRATION (HS-CHAPTER HHI)
 # =============================================================================
 # A Herfindahl index over each ACP country's exports by HS chapter (the first
 # two digits of the HS6 product code), by year. Tests whether bloc
@@ -770,10 +716,7 @@ if (file.exists(CACHE_HHI)) {
   message("Loading BACI with HS-chapter detail (", min(YEARS), "-", max(YEARS),
           ") -- this re-reads the raw files and is slow...")
   baci_hs <- map_dfr(YEARS, function(yr) {
-    f <- file.path(BACI_DIR, paste0("BACI_HS92_Y", yr, "_", BACI_VERSION, ".csv"))
-    if (!file.exists(f)) stop("Missing required annual file: ", f)
-    read_csv(f, col_types = cols(t = "i", i = "c", j = "c",
-                                 k = "c", v = "d", q = "d")) |>
+    read_baci_annual_file(yr) |>
       mutate(hs_chapter = substr(k, 1, 2)) |>
       select(t, i, hs_chapter, v) |>
       group_by(t, i, hs_chapter) |>
@@ -864,70 +807,45 @@ rec_pairs_cod <- bind_rows(
 )
 
 # --- Denominators -----------------------------------------------------------
-acp_total_exports <- baci |>
-  filter(iso3_exp %in% ACP_ISO3) |>
-  group_by(year, iso3 = iso3_exp) |>
-  summarise(total_exports = sum(trade_value, na.rm = TRUE), .groups = "drop")
+# Shared shape for all four partner-total pairs below: sum trade_value by
+# year x ACP country, on the export side and the import side, restricted to
+# a counterparty test. `total` uses no restriction; `non_eu` (denominator of
+# it_share_exeu) excludes EU partners, which severs the mechanical link
+# between the IT share and the EU-ACP bilateral dependent variable -- a
+# simultaneous contraction in EU bilateral flows can no longer mechanically
+# inflate the denominator and bias the IT share upward. `china`/`us` restrict
+# TO that partner: china_share in script 02 tests whether the "clean" non-EU
+# denominator is itself moving because of a rising third-party partner rather
+# than being genuinely inert (a preemptive robustness check, never entering
+# the baseline formula in script 02's Section 6); us_trade/china_trade also
+# serve as candidate DEPENDENT variables in their own right for a parallel-DV
+# test of whether intra-REC integration moves with or against a partner other
+# than the EU (diversion vs general growth) -- AGOA is a US preferential
+# arrangement playing a structurally similar role to the EU's EPAs here,
+# though with different eligibility criteria and its own commodity/oil
+# concentration quirks for some countries, worth a footnote if the US
+# parallel-DV result is used.
+build_partner_totals <- function(baci, partner_test, exp_col, imp_col) {
+  exports <- baci |>
+    filter(iso3_exp %in% ACP_ISO3, partner_test(iso3_imp)) |>
+    group_by(year, iso3 = iso3_exp) |>
+    summarise(!!exp_col := sum(trade_value, na.rm = TRUE), .groups = "drop")
+  imports <- baci |>
+    filter(iso3_imp %in% ACP_ISO3, partner_test(iso3_exp)) |>
+    group_by(year, iso3 = iso3_imp) |>
+    summarise(!!imp_col := sum(trade_value, na.rm = TRUE), .groups = "drop")
+  list(exports = exports, imports = imports)
+}
 
-acp_total_imports <- baci |>
-  filter(iso3_imp %in% ACP_ISO3) |>
-  group_by(year, iso3 = iso3_imp) |>
-  summarise(total_imports = sum(trade_value, na.rm = TRUE), .groups = "drop")
+tot    <- build_partner_totals(baci, function(x) TRUE,            "total_exports",  "total_imports")
+non_eu <- build_partner_totals(baci, function(x) !x %in% EU_ISO3, "non_eu_exports", "non_eu_imports")
+china  <- build_partner_totals(baci, function(x) x == "CHN",      "china_exports",  "china_imports")
+us     <- build_partner_totals(baci, function(x) x == "USA",      "us_exports",     "us_imports")
 
-# Non-EU trade totals (denominator of it_share_exeu).
-# Excluding EU partners from the denominator severs the mechanical link between
-# the IT share and the EU-ACP bilateral dependent variable: a simultaneous
-# contraction in EU bilateral flows can no longer mechanically inflate the
-# denominator and bias the IT share upward.
-acp_non_eu_exports <- baci |>
-  filter(iso3_exp %in% ACP_ISO3, !iso3_imp %in% EU_ISO3) |>
-  group_by(year, iso3 = iso3_exp) |>
-  summarise(non_eu_exports = sum(trade_value, na.rm = TRUE), .groups = "drop")
-
-acp_non_eu_imports <- baci |>
-  filter(iso3_imp %in% ACP_ISO3, !iso3_exp %in% EU_ISO3) |>
-  group_by(year, iso3 = iso3_imp) |>
-  summarise(non_eu_imports = sum(trade_value, na.rm = TRUE), .groups = "drop")
-
-# China trade totals (added 2026-08, post-conference). Mirrors the non-EU
-# construction above but filtered TO China as counterparty rather than
-# excluding the EU. Purpose: script 02 builds china_share = china_trade /
-# total_trade the same way it builds s_eu, to test whether the "clean"
-# non-EU denominator in the mechanical-endogeneity battery is itself moving
-# because of a rising third-party partner rather than being genuinely inert.
-# This is a preemptive robustness check, not a headline variable -- it never
-# enters the baseline formula in script 02's Section 6.
-acp_china_exports <- baci |>
-  filter(iso3_exp %in% ACP_ISO3, iso3_imp == "CHN") |>
-  group_by(year, iso3 = iso3_exp) |>
-  summarise(china_exports = sum(trade_value, na.rm = TRUE), .groups = "drop")
-
-acp_china_imports <- baci |>
-  filter(iso3_imp %in% ACP_ISO3, iso3_exp == "CHN") |>
-  group_by(year, iso3 = iso3_imp) |>
-  summarise(china_imports = sum(trade_value, na.rm = TRUE), .groups = "drop")
-
-# US trade totals (added 2026-08-05, for the diversion parallel-DV check --
-# handoff item 5/6). Same construction as china_exports/imports above, filtered
-# to USA instead of CHN. Purpose is different from china_share in script 02:
-# china_share is a CONTROL on the EU-trade model (does China contaminate the
-# denominator); us_trade/china_trade here are candidate DEPENDENT variables in
-# their own right, for a parallel-DV test of whether intra-REC integration
-# moves with or against a partner other than the EU (diversion vs general
-# growth). The US is also a useful methodological parallel: AGOA is a US
-# preferential arrangement playing a structurally similar role to the EU's
-# EPAs, though it works through different eligibility criteria and has its
-# own commodity/oil concentration quirks for some countries -- worth a
-# footnote in the paper if the US parallel-DV result is used.
-acp_us_exports <- baci |>
-  filter(iso3_exp %in% ACP_ISO3, iso3_imp == "USA") |>
-  group_by(year, iso3 = iso3_exp) |>
-  summarise(us_exports = sum(trade_value, na.rm = TRUE), .groups = "drop")
-
-acp_us_imports <- baci |>
-  filter(iso3_imp %in% ACP_ISO3, iso3_exp == "USA") |>
-  group_by(year, iso3 = iso3_imp) |>
-  summarise(us_imports = sum(trade_value, na.rm = TRUE), .groups = "drop")
+acp_total_exports  <- tot$exports;    acp_total_imports  <- tot$imports
+acp_non_eu_exports <- non_eu$exports; acp_non_eu_imports <- non_eu$imports
+acp_china_exports  <- china$exports;  acp_china_imports  <- china$imports
+acp_us_exports     <- us$exports;     acp_us_imports     <- us$imports
 
 # --- Numerators: static pairs -----------------------------------------------
 intra_exp_static <- baci |>
@@ -1149,7 +1067,7 @@ stage("bilateral")
 
 
 # =============================================================================
-# 7.5 EU-PARTNER CONCENTRATION (added 2026-08, post-conference)
+# 7.5 EU-PARTNER CONCENTRATION
 # =============================================================================
 # Herfindahl index of an ACP country's EU-side trade across the 28 EU
 # partners, by year. Built entirely from eu_acp_grid above -- no new data.
@@ -1375,7 +1293,7 @@ stage("epa_panel")
 # The object is named `acp_panel`, NOT `panel`. fixest exports a function called
 # panel(); when that package is attached, an unassigned `panel` resolves to the
 # function and saveRDS() will happily serialize it to a 1.5 KB .rds that looks
-# like a valid file. That is exactly what happened on 2026-07-23.
+# like a valid file.
 message("Building final panel...")
 
 acp_panel <- eu_acp_grid |>
@@ -1401,9 +1319,9 @@ acp_panel <- eu_acp_grid |>
     ln_gdp_eu       = log(gdp_eu),
     ln_gdp_acp      = log(gdp_acp),
     ln_dist         = log(distance),
-    # Linder-type control (handoff item 5): total market size (ln_gdp_eu)
-    # already exists; this adds income LEVEL, which market size does not
-    # capture. No new WDI pull -- pop_eu is already in hand.
+    # Linder-type control: total market size (ln_gdp_eu) already exists;
+    # this adds income LEVEL, which market size does not capture. No new
+    # WDI pull -- pop_eu is already in hand.
     gdp_pc_eu       = gdp_eu / pop_eu,
     exporter_year   = paste(eu_iso3,  year, sep = "_"),
     importer_year   = paste(acp_iso3, year, sep = "_"),
@@ -1517,12 +1435,13 @@ stage("validation")
 #     sets those dyad-years to NA. It is therefore a different quantity from
 #     the SADC mean in aux_summary_statistics.csv, which script 02 computes
 #     AFTER that rule and which is what Table 2 and all paper text use
-#     (confirmed 0.324 on the 2000-2021 run dated 2026-07-28).
+#     (confirmed 0.324 on the 2000-2021 run).
 #
 #     There is no donor-pool imputation anywhere in the pipeline any more --
 #     that apparatus was deleted from 02_estimate_gravity.R (see that script's
-#     changelog item 6). Do not reintroduce a reference to an "imputed" SADC
-#     mean; the current treatment is an explicit NA rule, not a fill.
+#     Section 2 comment for why it was rejected). Do not reintroduce a
+#     reference to an "imputed" SADC mean; the current treatment is an
+#     explicit NA rule, not a fill.
 # =============================================================================
 rec_summary <- acp_panel |>
   filter(!is.na(it_share), !is.na(rec)) |>
@@ -1565,7 +1484,7 @@ stopifnot(
 # (c) Overwrite guard: never silently replace the panel the paper cites.
 # Uses a flag rather than stop(), because stop() only halts execution under
 # source(). When the script is pasted, execution continues past the error and
-# the writes below fire anyway -- which is exactly what happened on 2026-07-24.
+# the writes below fire anyway.
 SAFE_TO_WRITE <- TRUE
 if (file.exists(PANEL_RDS) && !OVERWRITE_PANEL) {
   SAFE_TO_WRITE <- FALSE
