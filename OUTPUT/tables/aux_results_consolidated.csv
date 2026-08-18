@@ -12,7 +12,7 @@ Main,M3c: Net EPA at mean IT Share,epa,-0.0448,0.0625,-0.7177,,41258
 Main,M5: OLS ln(trade),it_share,-1.8713,0.4564,-4.0999,***,38559
 Main,M5b: OLS ln(1+trade),it_share,-1.6355,0.4185,-3.9079,***,41258
 Main,NB-PML,it_share,-2.4494,0.5435,-4.5066,***,41258
-Main,+ ACP GDP/pop,it_share,-1.7988,0.6619,-2.7174,***,38955
+Main,+ ACP GDP/pop,it_share,-1.7599,0.6215,-2.8318,***,40432
 Mechanical,Ex-EU denominator,it_share_exeu,-0.2634,0.5099,-0.5167,,41258
 Mechanical,EU component fixed,it_share_fixeu,-0.2938,0.7162,-0.4103,,41258
 Mechanical,Log decomp (total): ln(intra),ln_intra,0.0168,0.0475,0.3538,,39659
@@ -33,7 +33,7 @@ Restriction,Side-matched: EU->ACP,ln_intra_m + ln_noneu_m,0.5436,0.0549,9.9016,*
 Restriction,Side-matched: ACP->EU,ln_intra_x + ln_noneu_x,0.1882,0.071,2.6507,***,39483
 Direction,D1: ACP exports to EU,it_share,-2.6164,1.019,-2.5677,**,41258
 Direction,D2: EU exports to ACP,it_share,-2.2575,0.482,-4.6835,***,41258
-Direction,D3: EU exports + GDP/pop,it_share,-1.7749,0.5964,-2.976,***,38955
+Direction,D3: EU exports + GDP/pop,it_share,-1.8278,0.552,-3.311,***,40432
 Direction,"D4: ACP exports, ex-EU denom",it_share_exeu,0.8901,0.7404,1.2022,,41258
 Direction,"D5: EU exports, ex-EU denom",it_share_exeu,-1.298,0.3258,-3.9836,***,41258
 Direction,"D6: ACP exports, EU fixed",it_share_fixeu,1.3619,1.0095,1.3491,,41258
