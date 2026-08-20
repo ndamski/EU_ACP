@@ -2,7 +2,7 @@
 
 *For "Does Regional Integration Divert Trade from Europe? A Ratio-Regressor Critique of EU–ACP Gravity Estimates."*
 
-*This document collects material referenced in the main text that is not required to follow the paper's argument: additional detail on two data-construction decisions (S.1–S.2), four tables reported only in summary or by cross-reference in the body (S.3), a Monte Carlo validation exercise (S.4), and an inverse-hyperbolic-sine robustness check (S.5). It is filed as online supporting material rather than as an in-text appendix, following the same convention used in Stender et al. (2021), whose comparable tables were filed the same way. Supporting Information of this kind is not counted against the journal's word limit for the article itself.*
+*This document collects material referenced in the main text that is not required to follow the paper's argument: additional detail on two data-construction decisions (S.1–S.2), six tables reported only in summary or by cross-reference in the body (S.3), a Monte Carlo validation exercise (S.4), and an inverse-hyperbolic-sine robustness check (S.5). It is filed as online supporting material rather than as an in-text appendix, following the same convention used in Stender et al. (2021), whose comparable tables were filed the same way. Supporting Information of this kind is not counted against the journal's word limit for the article itself.*
 
 ---
 
@@ -55,7 +55,7 @@ A separate construction error, distinct from the accession-timing detail above, 
 
 ## S.3 Online Appendix Tables
 
-The following four tables are referenced by number in the main text and reported here in full, to keep the article within the journal's word limit. (Tables 3, 4, and 6 are reported in full in the main text, Sections 5.2 and 5.4, and are not repeated here.) All numbers below are drawn from the current project pipeline (n = 41,258 baseline throughout).
+The following six tables are referenced by number in the main text and reported here in full, to keep the article within the journal's word limit. (Tables 3, 4, and 6 are reported in full in the main text, Sections 5.2 and 5.4, and are not repeated here.) All numbers below are drawn from the current project pipeline (n = 41,258 baseline throughout).
 
 **Table 2. Magnitude of the pooled estimate**
 
