@@ -1,8 +1,8 @@
 peg,rec_term,dev_before,dev_before_se,dev_after,dev_after_se,interaction,interaction_se,magnitude_shrinks,sig_shrinks
-peg_cemac,dev_CAF,5.1721,2.2642,0.256,1.0103,7.2758,2.1677,TRUE,TRUE
-peg_comoros,dev_ESA,1.6347,1.29,1.7603,1.4929,-2.6605,1.7103,FALSE,TRUE
-peg_cma,dev_SADC,-0.0941,1.1733,-0.54,1.5399,3.261,1.3243,FALSE,FALSE
-peg_eccu,dev_CARIFORUM,0.8069,1.1088,1.7234,1.6225,-0.1968,1.9939,FALSE,FALSE
-peg_pacific,dev_PIF,-22.9555,12.93,-2.6987,6.0701,-38.3306,21.8936,TRUE,TRUE
-peg_waemu,NA,NA,NA,NA,NA,1.1484,1.2837,NA,NA
-export_hhi,NA,NA,NA,NA,NA,0.4744,1.0003,NA,NA
+peg_cemac,dev_CAF,5.1655,2.2666,0.2492,1.0113,7.2696,2.1673,TRUE,TRUE
+peg_comoros,dev_ESA,1.6303,1.2908,1.757,1.4914,-2.6611,1.7134,FALSE,TRUE
+peg_cma,dev_SADC,-0.0973,1.1698,-0.5433,1.5315,3.2647,1.3222,FALSE,FALSE
+peg_eccu,dev_CARIFORUM,0.8057,1.1088,1.7234,1.6221,-0.2001,1.9923,FALSE,FALSE
+peg_pacific,dev_PIF,-22.9641,12.9308,-2.71,6.0743,-38.3355,21.8936,TRUE,TRUE
+peg_waemu,NA,NA,NA,NA,NA,1.1479,1.2821,NA,NA
+export_hhi,NA,NA,NA,NA,NA,0.4942,1.0001,NA,NA

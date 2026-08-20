@@ -1,3 +1,0 @@
-﻿
-w:rsidR="00D6683A" w:rsidRDefault="00D6683A" w14:paraId="49FC26B4" w14:textId="77777777">
-w:rsidR="00D6683A" w:rsidRDefault="00D6683A" w14:paraId="79DBD221" w14:textId="77777777">

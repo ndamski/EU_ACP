@@ -61,7 +61,7 @@ make_panel <- function(world_sf, xlim, ylim, title) {
           panel.grid = element_blank(), legend.position = "bottom")
 }
 
-fig_bloc_map <- make_panel(world, xlim = c(-20, 55), ylim = c(-35, 25), "Africa")
+fig_bloc_map <- make_panel(world, xlim = c(-20, 55), ylim = c(-35, 25), NULL)
 
 print(fig_bloc_map)
 ggsave("OUTPUT/figures/fig_bloc_map.png", fig_bloc_map, width = 8, height = 8, dpi = 300)

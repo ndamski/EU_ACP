@@ -785,18 +785,33 @@ rec_pairs_tls <- bind_rows(
   expand_grid(year = 2003:max(YEARS), iso3_reporter = pif_members_static, iso3_partner = "TLS")
 )
 
-# BDI and RWA acceded to the EAC together in 2007 (see BDI_RWA_REC, Section 3).
-# Unlike MRT/TLS, this is TWO countries joining simultaneously, so pairs are
-# needed both against the pre-existing static EAC members AND between BDI and
-# RWA themselves -- both are EAC members from 2007, so BDI-RWA trade is
-# intra-REC trade too, not just BDI/RWA-vs-KEN/TZA/UGA trade.
-eac_members_static <- REC_MEMBERSHIP_STATIC |> filter(rec == "EAC") |> pull(iso3)
-rec_pairs_bdirwa <- bind_rows(
-  expand_grid(year = 2007:max(YEARS), iso3_reporter = c("BDI","RWA"), iso3_partner = eac_members_static),
-  expand_grid(year = 2007:max(YEARS), iso3_reporter = eac_members_static, iso3_partner = c("BDI","RWA")),
-  expand_grid(year = 2007:max(YEARS), iso3_reporter = "BDI", iso3_partner = "RWA"),
-  expand_grid(year = 2007:max(YEARS), iso3_reporter = "RWA", iso3_partner = "BDI")
-)
+# EAC has no static core: unlike every other bloc, all five members (KEN,
+# UGA, TZA, BDI, RWA) are time-varying (see REC_MEMBERSHIP_STATIC's EAC
+# comment above). eac_members_static <- REC_MEMBERSHIP_STATIC |> filter(rec
+# == "EAC") therefore evaluated to an EMPTY vector, which silently zeroed out
+# EAC's entire intra-REC numerator: rec_pairs_static (built from
+# REC_MEMBERSHIP_STATIC alone) contained no EAC pairs at all, so
+# Kenya-Uganda-Tanzania trade with each other was never credited to any
+# numerator in any year, and the two expand_grid() calls below that used to
+# cross BDI/RWA against eac_members_static produced zero rows against an
+# empty partner list, leaving only the hardcoded BDI<->RWA bilateral pair.
+# Confirmed against raw BACI: Kenya's actual 2019 intra-EAC share is 8.68%:
+# the panel reported exactly 0.
+#
+# REC_LOOKUP (built above from KEN_UGA_REC/TZA_REC/BDI_RWA_REC) already
+# encodes, year by year, exactly which countries hold EAC membership -- so
+# pairs are built directly from that instead of a nonexistent static core.
+# This generates every ordered pair among that year's EAC-affiliated
+# countries, correctly time-varying and symmetric (both directions credited),
+# with no dependence on FIX_TIMEVARYING_REC_PAIRS -- that flag's
+# legacy/corrected distinction is about a documented, understood asymmetry
+# for MRT/TLS; EAC's bug was a total gap, not a lesser alternative.
+eac_lookup <- REC_LOOKUP |> filter(rec == "EAC")
+rec_pairs_eac <- eac_lookup |>
+  inner_join(eac_lookup, by = "year", suffix = c("_i", "_j"),
+             relationship = "many-to-many") |>
+  filter(iso3_i != iso3_j) |>
+  select(year, iso3_reporter = iso3_i, iso3_partner = iso3_j)
 
 # COD acceded to SADC in 1998 (see COD_REC, Section 3) -- a single new member
 # joining an existing bloc, same shape as MRT joining ECOWAS above.
@@ -892,22 +907,29 @@ build_tv_intra <- function(pairs, focal) {
   )
 }
 
-tv_mrt    <- build_tv_intra(rec_pairs_mrt,    "MRT")
-tv_tls    <- build_tv_intra(rec_pairs_tls,    "TLS")
-tv_bdirwa <- build_tv_intra(rec_pairs_bdirwa, c("BDI","RWA"))
-tv_cod    <- build_tv_intra(rec_pairs_cod,    "COD")
+tv_mrt <- build_tv_intra(rec_pairs_mrt, "MRT")
+tv_tls <- build_tv_intra(rec_pairs_tls, "TLS")
+tv_cod <- build_tv_intra(rec_pairs_cod, "COD")
+
+# rec_pairs_eac already contains every EAC member as both reporter and
+# partner (symmetric, both directions), so every EAC country is its own
+# "focal" country here -- the FIX_TIMEVARYING_REC_PAIRS filter inside
+# build_tv_intra() is a no-op regardless of that flag's value, which is
+# correct: EAC's fix is not the legacy/corrected asymmetry choice that flag
+# controls for MRT/TLS, it is closing a total gap.
+tv_eac <- build_tv_intra(rec_pairs_eac, unique(eac_lookup$iso3))
 
 # The re-aggregation below is a no-op in legacy mode (each time-varying country
 # appears only in its own table). Under the fix, static-bloc members appear in
 # BOTH the static and time-varying tables; without this collapse the
 # downstream left_join would silently duplicate country-years.
 intra_exp_all <- bind_rows(intra_exp_static, tv_mrt$exports, tv_tls$exports,
-                           tv_bdirwa$exports, tv_cod$exports) |>
+                           tv_eac$exports, tv_cod$exports) |>
   group_by(iso3, year) |>
   summarise(intra_exports = sum(intra_exports, na.rm = TRUE), .groups = "drop")
 
 intra_imp_all <- bind_rows(intra_imp_static, tv_mrt$imports, tv_tls$imports,
-                           tv_bdirwa$imports, tv_cod$imports) |>
+                           tv_eac$imports, tv_cod$imports) |>
   group_by(iso3, year) |>
   summarise(intra_imports = sum(intra_imports, na.rm = TRUE), .groups = "drop")
 

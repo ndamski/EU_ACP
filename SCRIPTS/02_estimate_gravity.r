@@ -123,13 +123,16 @@ F_AUX_EUSHARE   <- file.path(DIR_TAB, "aux_eu_trade_share.csv")
 F_AUX_PERIODS   <- file.path(DIR_TAB, "aux_beta_by_period.csv")
 F_AUX_CONSOL    <- file.path(DIR_TAB, "aux_results_consolidated.csv")
 F_AUX_RESTRICT  <- file.path(DIR_TAB, "aux_ratio_restrictions.csv")
+F_AUX_IHS_C     <- file.path(DIR_TAB, "aux_ihs_robustness.csv")
+F_AUX_IHS_TEX   <- file.path(DIR_TAB, "aux_ihs_robustness.tex")
 
 
 EXPECTED_OUTPUTS <- c(
   F_T1_MAIN, F_T2_MARGINAL, F_T2_MARGINAL_C, F_T3_MECHANICAL, F_T4_RESTRICTION,
   F_T5_DIRECTION, F_T6_RECINTER, F_T7_ESTIMATORS, F_T8_SAMPLE, F_T9_DIVERSION,
   F_AUX_CLUSTER, F_AUX_CLUSTER_C, F_T10_DIRCLEAN, F_AUX_LEAVEOUT, F_AUX_SUMSTATS,
-  F_AUX_EUSHARE, F_AUX_PERIODS, F_AUX_CONSOL, F_AUX_RESTRICT
+  F_AUX_EUSHARE, F_AUX_PERIODS, F_AUX_CONSOL, F_AUX_RESTRICT,
+  F_AUX_IHS_C, F_AUX_IHS_TEX
 )
 
 
@@ -1273,6 +1276,72 @@ message(sprintf(
   format(nobs(m2_logsample), big.mark = ","),
   coef(m2)[["it_share"]], se(m2)[["it_share"]],
   format(nobs(m2), big.mark = ",")))
+
+
+# --- 10.3a IHS ROBUSTNESS CHECK -----------------------------------------
+# Addresses coarse review round 2, Overall #3. log() sends intra_trade == 0
+# to NA and PPML drops the row; asinh(0) = 0, so the IHS transform keeps
+# every country-year the log specs above drop (overwhelmingly PIF -- see
+# zero_intra, Section 9). Scoped to the two Bilateral cells that carry the
+# paper's headline numbers -- the clean/overlapping restriction test (10.2)
+# and the disjoint expansion elasticity (10.3, the pooled +0.133) -- not the
+# nine-cell Table 4 grid. The directional/side-matched cells are left for a
+# future pass if a referee specifically flags them as zero-trade-sensitive.
+panel <- panel |>
+  mutate(
+    asinh_intra = asinh(intra_trade),
+    asinh_noneu = asinh(non_eu_trade),
+    asinh_extra = asinh(extra_noneu)
+  )
+
+f_ihs_clean <- mk("total_bilateral", "asinh_intra + asinh_noneu")
+f_ihs_orth  <- mk("total_bilateral", "asinh_intra + asinh_extra")
+
+m_ihs_clean <- fit_ppml(f_ihs_clean, panel)
+m_ihs_orth  <- fit_ppml(f_ihs_orth,  panel)
+
+message("IHS robustness check (retains zero-trade country-years the log specs drop):")
+rr_ihs_clean <- report_decomp(m_ihs_clean, "Bilateral",
+                              v1 = "asinh_intra", v2 = "asinh_noneu",
+                              spec = "Overlapping (clean, IHS)")
+rr_ihs_orth  <- report_decomp(m_ihs_orth,  "Bilateral",
+                              v1 = "asinh_intra", v2 = "asinh_extra",
+                              spec = "Disjoint (IHS)")
+
+message(sprintf(
+  "  IHS sample: n = %s vs the log specs' n = %s (clean) / n = %s (disjoint) -- %s more observations retained.",
+  format(nobs(m_ihs_clean), big.mark = ","),
+  format(nobs(m_logclean),  big.mark = ","),
+  format(nobs(m_logorth),   big.mark = ","),
+  format(nobs(m_ihs_clean) - nobs(m_logclean), big.mark = ",")))
+
+ihs_tbl <- bind_rows(rr_ihs_clean, rr_ihs_orth) |>
+  mutate(across(c(b_num, se_num, b_den, se_den,
+                  restr_sum, restr_se, restr_t), \(x) round(x, 4)))
+write_csv(ihs_tbl, F_AUX_IHS_C)
+
+ihs_tex_rows <- with(ihs_tbl, sprintf(
+  "%-25s & %+.3f & (%.3f) & %+.3f & (%.3f) & %+.3f & (%.3f) & %+.2f & %s \\\\",
+  specification, b_num, se_num, b_den, se_den, restr_sum, restr_se, restr_t,
+  format(n, big.mark = ",")
+))
+ihs_tex_out <- c(
+  "\\begin{tabular}{lrrrrrrrr}",
+  "\\midrule\\midrule",
+  "Specification (IHS) & $\\beta_{\\text{intra}}$ & (SE) & $\\beta_{\\text{den}}$ & (SE) & Sum & (SE) & $t$ & $n$ \\\\",
+  "\\midrule",
+  ihs_tex_rows,
+  "\\midrule\\midrule",
+  paste0(
+    "\\multicolumn{9}{p{0.95\\linewidth}}{\\emph{Inverse-hyperbolic-sine robustness ",
+    "check: asinh(x) replaces log(x), retaining zero-trade country-years the ",
+    "log specifications drop. Standard errors clustered by ", CLUSTER_LABEL,
+    ". Compare against Table 3's Log decomp. (non-EU) column and Table 4's ",
+    "Disjoint / Bilateral row.}}\\\\"),
+  "\\end{tabular}"
+)
+writeLines(ihs_tex_out, F_AUX_IHS_TEX)
+message("Wrote ", F_AUX_IHS_C, " and ", F_AUX_IHS_TEX, ".")
 
 
 # --- 10.3b DIVERSION CHECK: does integration move with or against other -----
